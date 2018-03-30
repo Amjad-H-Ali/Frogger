@@ -1,5 +1,6 @@
 //Global Vars
-let speed = 2;
+//The Value to increment/Decrement X,Y when Moving Frog
+let speed = 8;
 
 
 
@@ -9,23 +10,24 @@ const ctx = canvas.getContext('2d');
 //Add an evnt listener to DOC
 document.addEventListener('keydown',(e)=>{
 	const key = e.key;
-	//Change Frogger Direction When User clicks on Arrow Keys
+	//Change Frogger Position when Keys are pressed
 	if(key === 'ArrowRight'){
-		// frogger.direction = 'E';
+
 		frogger.x += speed;
 	}
 	else if(key === 'ArrowLeft'){
-		// frogger.direction = 'W';
+
 		frogger.x -= speed;
 	}
 	else if(key === 'ArrowUp' ){
-		// frogger.direction = 'N';
+		
 		frogger.y -= speed;
 	}
 	else if(key === 'ArrowDown'){
-		// frogger.direction = 'S';
+		
 		frogger.y += speed;
 	}
+	//Erase And Draw New Position of Frog
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	frogger.drawFrog()
 })
@@ -35,8 +37,6 @@ document.addEventListener('keydown',(e)=>{
 const frogger = {
 	//How Many Lives our Hero will Have
 	life: 5,
-	//Direction Frog Moves
-	direction: 'N',
 	//Position hero in center of width of canvas
 	x: canvas.width/2,
 	y: canvas.height - 50,
@@ -45,31 +45,80 @@ const frogger = {
 	color: 'rgb(102,153,0)',
 	//Function to draw body
 	drawFrog(){
+		//Arms & Legs Width
 		ctx.lineWidth = 3;
-
+		//Draw Left Arm and Right Leg
 		ctx.beginPath();
 		ctx.moveTo(this.x - 15, this.y - 15);
 		ctx.lineTo(this.x + 15 , this.y + 15);
 		ctx.strokeStyle = this.color;
 
 		ctx.stroke();
-
+		//Draw Right Arm and Left Leg
 		ctx.beginPath();
 		ctx.moveTo(this.x - 15, this.y + 15);
 		ctx.lineTo(this.x + 15 , this.y - 15);
 		ctx.strokeStyle = this.color;
 		ctx.stroke();
-
+		// Draw Body Part
 		ctx.beginPath();
  		console.log(this);
 		ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
 		ctx.fillStyle = this.color;
 		ctx.fill();
 	},
+
+
 	
 }
 
-frogger.drawFrog()
+
+
+//Make Scene Object
+const scene = {
+
+	land:{
+		x: 0,
+		y: 0,
+		w: canvas.width,
+		h: canvas.height/5,
+		color:'#B2F699',
+		drawLand(){
+			
+
+			for(let i = 0; i < 3; i ++){
+				ctx.beginPath();
+				ctx.rect(this.x , this.y , this.w, this.h)
+				ctx.fillStyle = this.color;
+				ctx.fill();
+
+				this.y += 320;
+			}
+		},
+
+	},
+	water:{
+		x: 0,
+		y: canvas.width/5,
+		w: canvas.width,
+		h: canvas.height/5, 
+		color: '#1491CB',
+		drawWater(){
+			for(let i = 0; i < 2; i ++){
+				ctx.beginPath();
+				ctx.rect(this.x , this.y , this.w, this.h)
+				ctx.fillStyle = this.color;
+				ctx.fill();
+
+				this.y += 320;
+			}
+		}
+	}
+}
+
+scene.land.drawLand();
+scene.water.drawWater();
+frogger.drawFrog();
 
 
 

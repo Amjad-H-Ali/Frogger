@@ -1,23 +1,33 @@
+//Global Vars
+let speed = 2;
+
+
+
 //Get Canvas
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 //Add an evnt listener to DOC
 document.addEventListener('keydown',(e)=>{
 	const key = e.key;
-	console.log(key);
 	//Change Frogger Direction When User clicks on Arrow Keys
 	if(key === 'ArrowRight'){
-		frogger.direction = 'E';
+		// frogger.direction = 'E';
+		frogger.x += speed;
 	}
 	else if(key === 'ArrowLeft'){
-		frogger.direction = 'W';
+		// frogger.direction = 'W';
+		frogger.x -= speed;
 	}
 	else if(key === 'ArrowUp' ){
-		frogger.direction = 'N';
+		// frogger.direction = 'N';
+		frogger.y -= speed;
 	}
 	else if(key === 'ArrowDown'){
-		frogger.direction = 'S';
+		// frogger.direction = 'S';
+		frogger.y += speed;
 	}
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	frogger.drawFrog()
 })
 
 
@@ -56,17 +66,10 @@ const frogger = {
 		ctx.fillStyle = this.color;
 		ctx.fill();
 	},
-	moveFrog(direction){
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-
-	},
-
-	changeDirection(){
-
-	},
-
-
-
 	
 }
+
+frogger.drawFrog()
+
+
+

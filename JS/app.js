@@ -28,7 +28,10 @@ document.addEventListener('keydown',(e)=>{
 		frogger.y += speed;
 	}
 	//Erase And Draw New Position of Frog
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	ctx.clearRect(0, 0, canvas.width, canvas.height); console.log("clear anvas");
+	scene.land.drawLand();
+	scene.water.drawWater();
 	frogger.drawFrog()
 })
 
@@ -44,7 +47,8 @@ const frogger = {
 	//Color of Body
 	color: 'rgb(102,153,0)',
 	//Function to draw body
-	drawFrog(){
+	drawFrog(){ 	console.log("drawFrog");
+
 		//Arms & Legs Width
 		ctx.lineWidth = 3;
 		//Draw Left Arm and Right Leg
@@ -66,6 +70,8 @@ const frogger = {
 		ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
 		ctx.fillStyle = this.color;
 		ctx.fill();
+
+		ctx.closePath();
 	},
 
 
@@ -83,17 +89,18 @@ const scene = {
 		w: canvas.width,
 		h: canvas.height/5,
 		color:'#B2F699',
-		drawLand(){
+		drawLand(){ console.log("drawLand")
 			
 
 			for(let i = 0; i < 3; i ++){
 				ctx.beginPath();
-				ctx.rect(this.x , this.y , this.w, this.h)
+				ctx.rect(this.x , i*320, this.w, this.h)
 				ctx.fillStyle = this.color;
 				ctx.fill();
-
-				this.y += 320;
+				ctx.closePath();
+				// this.y += 320;
 			}
+
 		},
 
 	},
@@ -103,15 +110,17 @@ const scene = {
 		w: canvas.width,
 		h: canvas.height/5, 
 		color: '#1491CB',
-		drawWater(){
+		drawWater(){ console.log("drawWater")
 			for(let i = 0; i < 2; i ++){
 				ctx.beginPath();
 				ctx.rect(this.x , this.y , this.w, this.h)
 				ctx.fillStyle = this.color;
 				ctx.fill();
-
+				ctx.closePath();
 				this.y += 320;
 			}
+			// reset the value of y for next time
+			this.y = canvas.width/5
 		}
 	}
 }

@@ -1,6 +1,6 @@
 //Global Vars
 //The Value to increment/Decrement X,Y when Moving Frog
-let speed = 10;
+let speed = 50;
 
 
 
@@ -28,9 +28,9 @@ document.addEventListener('keydown',(e)=>{
 		frogger.y += speed;
 	}
 	//Erase And Draw New Position of Frog And redraw Scene
-	ctx.clearRect(0, 0, canvas.width, canvas.height); console.log("clear anvas");
-	scene.drawScene();
-	frogger.drawFrog()
+	// ctx.clearRect(0, 0, canvas.width, canvas.height);
+	// scene.drawScene();
+	// frogger.drawFrog()
 })
 
 
@@ -130,7 +130,26 @@ const scene = {
 				},
 				//Street Object
 				street:{
-					rows:[[],[],[]],
+					rows: [ 
+						{
+							name:'row1',
+							x:0,
+							y:550,
+							vehicles:[]
+						},
+					 	{	name:'row2',
+							x:2,
+							y:5,
+							vehicles:[]
+
+					 	},
+					 	{
+					 		name:'row3',
+							x:2,
+							y:5,
+							vehicles:[]
+					 	}
+					 ],
 					drawStreet(){
 						ctx.beginPath();
 						ctx.rect(scene.dangerZone.x , scene.dangerZone.y + 300 , scene.dangerZone.w, scene.dangerZone.h)
@@ -139,6 +158,12 @@ const scene = {
 						ctx.closePath();
 						// reset the value of y for next time
 						scene.dangerZone.y = canvas.height/7;
+					},
+					vehicleFactory(){
+						const newVehicle = new Vehicle(this.rows[0].x, this.rows[0].y,100,50,'blue',1);
+
+						this.rows[0].vehicles.push(newVehicle);
+
 					}
 				}
 			
@@ -161,10 +186,40 @@ class Vehicle {
 			ctx.fill();
 			ctx.closePath();
 		}
+		move(){	
+
+
+			if(this.x + this.speed > canvas.width){
+				this.x = -canvas.width;
+			}
+
+			this.x += this.speed;
+			
+			scene.drawScene();
+			frogger.drawFrog();	
+			this.drawVehicle();
+
+				
+				
+				
+		}
 	
 
 }
-const newCar = new Vehicle(10,550,100,50,'blue');
+
+scene.dangerZone.street.vehicleFactory()
+scene.dangerZone.street.rows[0].vehicles[0].drawVehicle()
+
+const animate = ()=>{
+
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	scene.dangerZone.street.rows[0].vehicles[0].move()
+
+	window.requestAnimationFrame(animate);
+}
+
+
+
 scene.drawScene();
 frogger.drawFrog();
 

@@ -31,7 +31,8 @@ document.addEventListener('keydown',(e)=>{
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height); console.log("clear anvas");
 	scene.land.drawLand();
-	scene.water.drawWater();
+	scene.dangerZone.water.drawWater();
+	scene.dangerZone.street.drawStreet();
 	frogger.drawFrog()
 })
 
@@ -82,51 +83,65 @@ const frogger = {
 
 //Make Scene Object
 const scene = {
-
+	
 	land:{
-		x: 0,
-		y: 0,
-		w: canvas.width,
-		h: canvas.height/5,
-		color:'#B2F699',
-		drawLand(){ console.log("drawLand")
-			
+			x: 0,
+			y: 0,
+			w: canvas.width,
+			h: canvas.height/7,
+			color:'#B2F699',
+			drawLand(){ 
+						for(let i = 0; i < 3; i ++){
+						ctx.beginPath();
+						ctx.rect(this.x , i * 300, this.w, this.h)
+						ctx.fillStyle = this.color;
+						ctx.fill();
+						ctx.closePath();
+						
+						}
 
-			for(let i = 0; i < 3; i ++){
-				ctx.beginPath();
-				ctx.rect(this.x , i*320, this.w, this.h)
-				ctx.fillStyle = this.color;
-				ctx.fill();
-				ctx.closePath();
-				// this.y += 320;
-			}
-
-		},
+			},
 
 	},
-	water:{
-		x: 0,
-		y: canvas.width/5,
-		w: canvas.width,
-		h: canvas.height/5, 
-		color: '#1491CB',
-		drawWater(){ console.log("drawWater")
-			for(let i = 0; i < 2; i ++){
-				ctx.beginPath();
-				ctx.rect(this.x , this.y , this.w, this.h)
-				ctx.fillStyle = this.color;
-				ctx.fill();
-				ctx.closePath();
-				this.y += 320;
-			}
-			// reset the value of y for next time
-			this.y = canvas.width/5
-		}
-	}
+	
+	dangerZone:{
+				x: 0,
+				y: canvas.height/7,
+				w: canvas.width,
+				h: canvas.height/3.5, 
+				color: ['#1491CB','rgb(0,0,0)'],		
+				water:{
+					drawWater(){ 
+					
+						ctx.beginPath();
+						ctx.rect(scene.dangerZone.x , scene.dangerZone.y , scene.dangerZone.w, scene.dangerZone.h)
+						ctx.fillStyle = scene.dangerZone.color[0];
+						ctx.fill();
+						ctx.closePath();
+						// reset the value of y for next time
+						scene.dangerZone.y = canvas.height/7;
+					}
+					
+					
+				},
+				street:{
+					drawStreet(){
+						ctx.beginPath();
+						ctx.rect(scene.dangerZone.x , scene.dangerZone.y + 300 , scene.dangerZone.w, scene.dangerZone.h)
+						ctx.fillStyle = scene.dangerZone.color[1];
+						ctx.fill();
+						ctx.closePath();
+						// reset the value of y for next time
+						scene.dangerZone.y = canvas.height/7;
+					}
+				}
+			
+	}	
 }
 
 scene.land.drawLand();
-scene.water.drawWater();
+scene.dangerZone.water.drawWater();
+scene.dangerZone.street.drawStreet();
 frogger.drawFrog();
 
 

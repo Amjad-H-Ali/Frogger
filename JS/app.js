@@ -1,6 +1,6 @@
 //Global Vars
 //The Value to increment/Decrement X,Y when Moving Frog
-let speed = 8;
+let speed = 10;
 
 
 
@@ -27,12 +27,9 @@ document.addEventListener('keydown',(e)=>{
 		
 		frogger.y += speed;
 	}
-	//Erase And Draw New Position of Frog
-
+	//Erase And Draw New Position of Frog And redraw Scene
 	ctx.clearRect(0, 0, canvas.width, canvas.height); console.log("clear anvas");
-	scene.land.drawLand();
-	scene.dangerZone.water.drawWater();
-	scene.dangerZone.street.drawStreet();
+	scene.drawScene();
 	frogger.drawFrog()
 })
 
@@ -43,7 +40,7 @@ const frogger = {
 	life: 5,
 	//Position hero in center of width of canvas
 	x: canvas.width/2,
-	y: canvas.height - 50,
+	y: canvas.height - 70,
 	r: 10,
 	//Color of Body
 	color: 'rgb(102,153,0)',
@@ -83,14 +80,20 @@ const frogger = {
 
 //Make Scene Object
 const scene = {
-	
+	//Draw Everything in Scene
+	drawScene(){
+		this.land.drawLand();
+		this.dangerZone.water.drawWater();
+		this.dangerZone.street.drawStreet();
+	},
+	//The Safe Zone
 	land:{
-			x: 0,
-			y: 0,
-			w: canvas.width,
-			h: canvas.height/7,
-			color:'#B2F699',
-			drawLand(){ 
+			x: 0,//Draw From
+			y: 0,//Draw From
+			w: canvas.width,//Size of land Horizontally
+			h: canvas.height/7,//Size of Land Vertically
+			color:'#B2F699',//Color Of Land
+				drawLand(){ //Draw 3 Peices of land
 						for(let i = 0; i < 3; i ++){
 						ctx.beginPath();
 						ctx.rect(this.x , i * 300, this.w, this.h)
@@ -103,13 +106,14 @@ const scene = {
 			},
 
 	},
-	
+	//Danger zone is the water and Street
 	dangerZone:{
 				x: 0,
-				y: canvas.height/7,
+				y: canvas.height/7,//Where to draw from
 				w: canvas.width,
-				h: canvas.height/3.5, 
-				color: ['#1491CB','rgb(0,0,0)'],		
+				h: canvas.height/3.5, //Two Times bigger than land
+				color: ['#1491CB','rgb(0,0,0)'],
+				//Water Object
 				water:{
 					drawWater(){ 
 					
@@ -118,13 +122,15 @@ const scene = {
 						ctx.fillStyle = scene.dangerZone.color[0];
 						ctx.fill();
 						ctx.closePath();
-						// reset the value of y for next time
+						// Reset the value of y for next time
 						scene.dangerZone.y = canvas.height/7;
 					}
 					
 					
 				},
+				//Street Object
 				street:{
+					rows:[[],[],[]],
 					drawStreet(){
 						ctx.beginPath();
 						ctx.rect(scene.dangerZone.x , scene.dangerZone.y + 300 , scene.dangerZone.w, scene.dangerZone.h)
@@ -139,9 +145,27 @@ const scene = {
 	}	
 }
 
-scene.land.drawLand();
-scene.dangerZone.water.drawWater();
-scene.dangerZone.street.drawStreet();
+class Vehicle {
+	constructor(x,y,w,h,color,speed){
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+		this.color = color;
+		this.speed = speed;
+		}
+		drawVehicle(){
+			ctx.beginPath();
+			ctx.rect(this.x, this.y, this.w, this.h)
+			ctx.fillStyle = this.color;
+			ctx.fill();
+			ctx.closePath();
+		}
+	
+
+}
+const newCar = new Vehicle(10,550,100,50,'blue');
+scene.drawScene();
 frogger.drawFrog();
 
 

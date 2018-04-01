@@ -1,16 +1,14 @@
-//Global Vars
-//The Value to increment/Decrement X,Y when Moving Frog
-let speed = 50;
 
-//Generates Random Color For Cars
+
+//Generates Random Color For Cars, 56-255 RGB Because we want bright colors
 const randomColor = ()=>{
 	let red, green, blue;
 
-	red = Math.floor(Math.random() * 256);
+	red = Math.floor(Math.random() * 200) + 56;
 	
-	green = Math.floor(Math.random() * 256);
+	green = Math.floor(Math.random() * 200) + 56;
 
-	blue = Math.floor(Math.random() * 256);
+	blue = Math.floor(Math.random() * 200) + 56;
 
 	return 'rgb(' + red + ', ' + green  + ', ' + blue + ')'
 
@@ -31,19 +29,19 @@ document.addEventListener('keydown',(e)=>{
 	//Change Frogger Position when Keys are pressed
 	if(key === 'ArrowRight'){
 
-		frogger.x += speed;
+		frogger.x +=  frogger.speed;
 	}
 	else if(key === 'ArrowLeft'){
 
-		frogger.x -= speed;
+		frogger.x -= frogger.speed;
 	}
 	else if(key === 'ArrowUp' ){
 		
-		frogger.y -= speed;
+		frogger.y -= frogger.speed;
 	}
 	else if(key === 'ArrowDown'){
 		
-		frogger.y += speed;
+		frogger.y += frogger.speed;
 	}
 	//Erase And Draw New Position of Frog And redraw Scene
 	// ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -56,6 +54,8 @@ document.addEventListener('keydown',(e)=>{
 const frogger = {
 	//How Many Lives our Hero will Have
 	life: 5,
+	//The Value to increment/Decrement X,Y when Moving Frog
+	speed : 70,
 	//Position hero in center of width of canvas
 	x: canvas.width/2,
 	y: canvas.height - 70,
@@ -140,23 +140,32 @@ const scene = {
 						name:'row1',
 						x:0,
 						y:237,
-						speed:2,
-						vehicles:[]
+						speed:1,
+						'log count': 3,
+						'croc count': 3,
+						vehicles:[],
+						crocs:[]
 					},
 					{	
 						name:'row2',
-						x:250,
+						x:0,
 						y:175,
-						speed:-3,
-						vehicles:[]
+						speed:-1,
+						'log count': 2,
+						'croc count': 4,
+						vehicles:[],
+						crocs:[]
 
 					 },
 					 {
 					 	name:'row3',
-						x:450,
+						x:0,
 						y:112.5,
-						speed:4,
-						vehicles:[]
+						speed:2,
+						'log count': 4,
+						'croc count': 2, 
+						vehicles:[],
+						crocs:[]
 					 }
 				],
 				//Draw Water
@@ -173,15 +182,26 @@ const scene = {
 				//Generate Logs And Push To Each Row
 				logFactory(){	
 					for(let i = 0; i < this.rows.length; i ++){
-						for(let j = 0; j < 3; j ++){
-							const newLog = new Log(this.rows[i].x + (200 * j), this.rows[i].y, 150, 50, scene.dangerZone.color[2], this.rows[i].speed, this.rows[i].name);
+						for(let j = 0; j < this.rows[i]['log count']; j ++){
+							const newLog = new Log(this.rows[i].x + (j * 200) , this.rows[i].y, 150, 50, scene.dangerZone.color[2], this.rows[i].speed, this.rows[i].name);
 							this.rows[i].vehicles.push(newLog);
 							this.rows[i].vehicles[j].drawVehicle();
+							
+
 						}
 					}	
 					
+				},
+				crocFactory(){
+					for(let i = 0; i < this.rows.length; i ++){
+						for(let j = 0; j < this.rows[i]['croc count']; j ++){
+							const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * 200) + (j * 200), this.rows[i].y, 150, 50, 'green', this.rows[i].speed, this.rows[i].name)
+							this.rows[i].crocs.push(newCroc);
+							this.rows[i].crocs[j].drawVehicle();
+						}
+					}
 				}
-			},
+			},	
 			//Street Object
 			street:{
 				//Rows In the Street
@@ -200,7 +220,7 @@ const scene = {
 						x:0,
 						y:485,
 						speed:-5,
-						'vehicle count': 4,
+						'vehicle count': 6,
 						vehicles:[]
 
 					},
@@ -209,7 +229,7 @@ const scene = {
 						x:0,
 						y:427.5,
 						speed:8,
-						'vehicle count': 4,
+						'vehicle count': 6,
 						vehicles:[]
 					 }
 				],
@@ -261,12 +281,12 @@ class Vehicle {
 		move(){	
 
 
-			if(this.x > canvas.width ){
+			if(this.x > (canvas.width + 150) && this.row !== 'row2'){
 				this.x = -150;
 			}
-			else if(this.x < 0 && this.row === 'row2'){
+			else if(this.x < -150 && this.row === 'row2'){
 
-				this.x = canvas.width; 
+				this.x = canvas.width +150 ; 
 				
 			}
 
@@ -290,6 +310,12 @@ class Log extends Vehicle{
 
 }
 
+//Make A Crocodile Class 
+class Croc extends Vehicle{
+	constructor(x,y,w,h,color,speed,row){
+		super(x, y, w, h, color, speed, row);
+	}
+}
 
 
 
@@ -300,7 +326,16 @@ const animate = ()=>{
 	//Draw Scene
 	scene.drawScene();
 
-	// Draw Each Log
+	// Draw Each Croc
+	for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
+		for(let j = 0, v = scene.dangerZone.water.rows[i].crocs.length ; j < v ; j ++){
+			
+			scene.dangerZone.water.rows[i].crocs[j].move();
+		}
+	}
+
+	
+	// Draw Each Log 
 	for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
 		for(let j = 0, v = scene.dangerZone.water.rows[i].vehicles.length ; j < v ; j ++){
 			scene.dangerZone.water.rows[i].vehicles[j].move();
@@ -327,6 +362,7 @@ frogger.drawFrog();
 
 scene.dangerZone.street.vehicleFactory()
 scene.dangerZone.water.logFactory()
+scene.dangerZone.water.crocFactory()
 
 
 

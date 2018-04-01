@@ -1,7 +1,23 @@
 //Global Vars
 //The Value to increment/Decrement X,Y when Moving Frog
 let speed = 50;
+const randomColor = ()=>{
+	let red, green, blue;
 
+	red = Math.floor(Math.random() * 256);
+	
+	green = Math.floor(Math.random() * 256);
+
+	blue = Math.floor(Math.random() * 256);
+
+	return 'rgb(' + red + ', ' + green  + ', ' + blue + ')'
+
+
+}
+
+const getRandomSize = () =>{
+	return Math.floor((Math.random() * 100) + 50)
+}
 
 
 //Get Canvas
@@ -134,19 +150,22 @@ const scene = {
 						{
 							name:'row1',
 							x:0,
-							y:550,
+							y:530,
+							speed:8,
 							vehicles:[]
 						},
 					 	{	name:'row2',
-							x:2,
-							y:5,
+							x:250,
+							y:470,
+							speed:-8,
 							vehicles:[]
 
 					 	},
 					 	{
 					 		name:'row3',
-							x:2,
-							y:5,
+							x:450,
+							y:410,
+							speed:10,
 							vehicles:[]
 					 	}
 					 ],
@@ -160,9 +179,14 @@ const scene = {
 						scene.dangerZone.y = canvas.height/7;
 					},
 					vehicleFactory(){
-						const newVehicle = new Vehicle(this.rows[0].x, this.rows[0].y,100,50,'blue',1);
-
-						this.rows[0].vehicles.push(newVehicle);
+						for(let i = 0; i < this.rows.length; i ++){
+							for(let j = 0; j < 3; j ++){
+								const newVehicle = new Vehicle(this.rows[i].x + (200 * j), this.rows[i].y, getRandomSize(), 30, randomColor() , this.rows[i].speed, this.rows[i].name);
+								this.rows[i].vehicles.push(newVehicle);
+								this.rows[i].vehicles[j].drawVehicle();
+							}
+						}	
+						
 
 					}
 				}
@@ -171,13 +195,14 @@ const scene = {
 }
 
 class Vehicle {
-	constructor(x,y,w,h,color,speed){
+	constructor(x,y,w,h,color,speed,row){
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
 		this.color = color;
 		this.speed = speed;
+		this.row = row;
 		}
 		drawVehicle(){
 			ctx.beginPath();
@@ -189,14 +214,18 @@ class Vehicle {
 		move(){	
 
 
-			if(this.x + this.speed > canvas.width){
-				this.x = -canvas.width;
+			if(this.x > canvas.width ){
+				this.x =  -150;
+			}
+			else if(this.x < 0 && this.row === 'row2'){
+
+				this.x = canvas.width; 
+				
 			}
 
 			this.x += this.speed;
 			
-			scene.drawScene();
-			frogger.drawFrog();	
+			
 			this.drawVehicle();
 
 				
@@ -207,21 +236,32 @@ class Vehicle {
 
 }
 
-scene.dangerZone.street.vehicleFactory()
-scene.dangerZone.street.rows[0].vehicles[0].drawVehicle()
+
+
+
+
 
 const animate = ()=>{
 
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	scene.dangerZone.street.rows[0].vehicles[0].move()
+	scene.drawScene();
+	frogger.drawFrog();	
+
+	for(let i = 0, r = scene.dangerZone.street.rows.length; i < r ; i ++){
+		for(let j = 0, v = scene.dangerZone.street.rows[i].vehicles.length ; j < v ; j ++){
+			scene.dangerZone.street.rows[i].vehicles[j].move();
+		}
+	}
+	
 
 	window.requestAnimationFrame(animate);
 }
 
-
-
 scene.drawScene();
 frogger.drawFrog();
+
+scene.dangerZone.street.vehicleFactory()
+
+
 
 
 

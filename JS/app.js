@@ -190,23 +190,26 @@ const scene = {
 					{
 						name:'row1',
 						x:0,
-						y:530,
-						speed:5,
+						y:542.5,
+						speed:3,
+						'vehicle count': 5,
 						vehicles:[]
 					},
 					{	
 						name:'row2',
-						x:250,
-						y:470,
+						x:0,
+						y:485,
 						speed:-5,
+						'vehicle count': 4,
 						vehicles:[]
 
 					},
 					{
 					 	name:'row3',
-						x:450,
-						y:410,
+						x:0,
+						y:427.5,
 						speed:8,
+						'vehicle count': 4,
 						vehicles:[]
 					 }
 				],
@@ -223,7 +226,7 @@ const scene = {
 				//Generate Vehicles And Push To Each Row
 				vehicleFactory(){
 					for(let i = 0; i < this.rows.length; i ++){
-						for(let j = 0; j < 3; j ++){
+						for(let j = 0; j < this.rows[i]['vehicle count']; j ++){
 							const newVehicle = new Vehicle(this.rows[i].x + (200 * j), this.rows[i].y, getRandomSize(), 30, randomColor() , this.rows[i].speed, this.rows[i].name);
 							this.rows[i].vehicles.push(newVehicle);
 							this.rows[i].vehicles[j].drawVehicle();
@@ -259,7 +262,7 @@ class Vehicle {
 
 
 			if(this.x > canvas.width ){
-				this.x =  -150;
+				this.x = -150;
 			}
 			else if(this.x < 0 && this.row === 'row2'){
 
@@ -282,6 +285,7 @@ class Log extends Vehicle{
 	constructor(x,y,w,h,color,speed,row){
 		super(x, y, w, h, color, speed, row);
 	}
+
 
 
 }

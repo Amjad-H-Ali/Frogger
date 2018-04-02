@@ -6,8 +6,8 @@ let scoreBoard = document.getElementById('scoreBoard')
 
 
 
-
-const theFroggerGame ={
+//General Game Object
+const theFroggerGame = {
 	//Generates Random Color For Cars, 56-255 RGB Because we want bright colors
 	randomColor (){
 		let red, green, blue;
@@ -33,8 +33,8 @@ const theFroggerGame ={
 		frogger.y = canvas.height - 70
 	},
 	//Function to Attach frog on log
-	attachLog(logXPosition){
-		frogger.x = logXPosition +(frogger.x -logXPosition);
+	attachLog(logSpeed){
+		frogger.x += logSpeed;
 		
 	}
 }	
@@ -56,13 +56,14 @@ document.addEventListener('keydown',(e)=>{
 		frogger.x -= frogger.speed;
 	}
 	else if(key === 'ArrowUp' ){
-		
+			
 		frogger.y -= frogger.speed;
 	}
 	else if(key === 'ArrowDown'){
-		
+			
 		frogger.y += frogger.speed;
 	}
+
 	//Erase And Draw New Position of Frog And redraw Scene
 	// ctx.clearRect(0, 0, canvas.width, canvas.height);
 	// scene.drawScene();
@@ -161,8 +162,8 @@ const scene = {
 						x:0,
 						y:252,
 						speed:1,
-						'log count': 3,
-						'croc count': 3,
+						'log count': 2,
+						'croc count': 4,
 						vehicles:[],
 						crocs:[]
 					},
@@ -182,8 +183,8 @@ const scene = {
 						x:0,
 						y:156,
 						speed:2,
-						'log count': 4,
-						'croc count': 2, 
+						'log count': 3,
+						'croc count': 3, 
 						vehicles:[],
 						crocs:[]
 					},
@@ -192,8 +193,8 @@ const scene = {
 						x:0,
 						y:108,
 						speed:-2,
-						'log count': 4,
-						'croc count': 2, 
+						'log count': 2,
+						'croc count': 3, 
 						vehicles:[],
 						crocs:[]
 					}
@@ -418,7 +419,8 @@ const animate = ()=>{
 			scene.dangerZone.water.rows[i].vehicles[j].move();
 			//Detect Collision For Each Log
 			if(scene.dangerZone.water.rows[i].vehicles[j].detectCollision() === false){
-				theFroggerGame.attachLog(scene.dangerZone.water.rows[i].vehicles[j].x);
+				theFroggerGame.attachLog(scene.dangerZone.water.rows[i].vehicles[j].speed);
+
 			};
 		}
 	}

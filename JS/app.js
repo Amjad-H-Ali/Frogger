@@ -19,6 +19,17 @@ const getRandomSize = () =>{
 	return Math.floor((Math.random() * 100) + 50)
 }
 
+//Function To Reset Game
+const resetGame = ()=>{
+	frogger.x = canvas.width/2;
+	frogger.y = canvas.height - 70
+}
+//Function to Attach frog on log
+const attachLog = (logXSpeed,logYSpeed) =>{
+	frogger.x = logXSpeed;
+	frogger.y = logYSpeed;
+}
+
 
 //Get Canvas
 const canvas = document.getElementById('canvas');
@@ -221,7 +232,7 @@ const scene = {
 						name:'row1',
 						x:0,
 						y:560,
-						speed:5,
+						speed:2,
 						'vehicle count': 2,
 						space: 200,
 						vehicles:[]
@@ -230,7 +241,7 @@ const scene = {
 						name:'row2',
 						x:0,
 						y:520,
-						speed:-5,
+						speed:-2,
 						'vehicle count': 3,
 						space: 300,
 						vehicles:[]
@@ -240,7 +251,7 @@ const scene = {
 					 	name:'row3',
 						x:0,
 						y:480,
-						speed:8,
+						speed:2,
 						'vehicle count': 3,
 						space: 350,
 						vehicles:[]
@@ -249,7 +260,7 @@ const scene = {
 						name: 'row4',
 						x: 0,
 						y: 440,
-						speed: 3,
+						speed: 2,
 						'vehicle count':3,
 						space:375,
 						vehicles:[]
@@ -330,6 +341,20 @@ class Vehicle {
 
 				
 		}
+		detectCollision(){
+			let left = this.x;
+			let right = this.x + this.w;
+			let top = this.y;
+			let bottom = this.y + this.h;
+			let frogLeft = frogger.x;
+			let frogRight = frogger.x + frogger.r;
+			let frogTop = frogger.y;
+			let frogBottom = frogger.y + frogger.r;
+
+
+			return (left > frogRight || right < frogLeft || top > frogBottom || bottom < frogTop)
+		
+		}
 	
 }
 
@@ -355,6 +380,54 @@ class Croc extends Vehicle{
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const animate = ()=>{
 	//Draw Scene
 	scene.drawScene();
@@ -372,8 +445,12 @@ const animate = ()=>{
 	for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
 		for(let j = 0, v = scene.dangerZone.water.rows[i].vehicles.length ; j < v ; j ++){
 			scene.dangerZone.water.rows[i].vehicles[j].move();
+			if(scene.dangerZone.water.rows[i].vehicles[j].detectCollision() === false){
+				attachLog(scene.dangerZone.water.rows[i].vehicles[j].x, scene.dangerZone.water.rows[i].vehicles[j].y);
+			};
 		}
 	}
+	
 	//Draw Frogger
 	frogger.drawFrog();	
 
@@ -381,10 +458,13 @@ const animate = ()=>{
 	for(let i = 0, r = scene.dangerZone.street.rows.length; i < r ; i ++){
 		for(let j = 0, v = scene.dangerZone.street.rows[i].vehicles.length ; j < v ; j ++){
 			scene.dangerZone.street.rows[i].vehicles[j].move();
+			if(scene.dangerZone.street.rows[i].vehicles[j].detectCollision() === false){
+				resetGame();
+			};
 		}
 	}
 
-
+	
 	
 
 	window.requestAnimationFrame(animate);

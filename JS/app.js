@@ -1,6 +1,7 @@
 
 //H3 Tag to imput score and Lives
 let scoreBoard = document.getElementById('scoreBoard')
+let control = true;
 
 
 
@@ -29,6 +30,7 @@ const theFroggerGame = {
 
 	//Function To Reset Game
 	resetGame (){
+		frogger.decrementLives();
 		frogger.x = canvas.width/2;
 		frogger.y = canvas.height - 70
 	},
@@ -36,7 +38,12 @@ const theFroggerGame = {
 	attachLog(logSpeed){
 		frogger.x += logSpeed;
 		
+	},
+	gameOver(){
+		control = false;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	}
+	
 }	
 
 
@@ -110,6 +117,13 @@ const frogger = {
 
 		ctx.closePath();
 	},
+	decrementLives(){
+		this.life -= 1;
+		scoreBoard.innerText = 'Lives: ' + frogger.life;
+		if(this.life === 0){
+			theFroggerGame.gameOver();
+		}
+	}
 
 
 	
@@ -214,7 +228,7 @@ const scene = {
 				logFactory(){	
 					for(let i = 0; i < this.rows.length; i ++){
 						for(let j = 0; j < this.rows[i]['log count']; j ++){
-							const newLog = new Log(this.rows[i].x + (j * 200) , this.rows[i].y, 150, 40, scene.dangerZone.color[2], this.rows[i].speed, this.rows[i].name);
+							const newLog = new Log(this.rows[i].x + (j * 180) , this.rows[i].y, 150, 40, scene.dangerZone.color[2], this.rows[i].speed, this.rows[i].name);
 							this.rows[i].vehicles.push(newLog);
 							this.rows[i].vehicles[j].drawVehicle();
 							
@@ -226,7 +240,7 @@ const scene = {
 				crocFactory(){
 					for(let i = 0; i < this.rows.length; i ++){
 						for(let j = 0; j < this.rows[i]['croc count']; j ++){
-							const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * 200) + (j * 200), this.rows[i].y, 150, 40, 'green', this.rows[i].speed, this.rows[i].name)
+							const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * 180) + (j * 180), this.rows[i].y, 150, 40, 'green', this.rows[i].speed, this.rows[i].name)
 							this.rows[i].crocs.push(newCroc);
 							this.rows[i].crocs[j].drawVehicle();
 						}
@@ -364,7 +378,7 @@ class Vehicle {
 			let frogTop = frogger.y;
 			let frogBottom = frogger.y + frogger.r;
 			//If any one of these are true , returns true, meaning not colliding.
-			return (left >= frogRight || right <= frogLeft || top >= frogBottom || bottom <= frogTop)
+			return !(left >= frogRight || right <= frogLeft || top >= frogBottom || bottom <= frogTop)
 
 		}
 	
@@ -399,34 +413,52 @@ const animate = ()=>{
 	//Draw Scene
 	scene.drawScene();
 
+	
+
 	// Draw Each Croc
 	for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
 		for(let j = 0, v = scene.dangerZone.water.rows[i].crocs.length ; j < v ; j ++){
 			//Move each croc
 			scene.dangerZone.water.rows[i].crocs[j].move();
-			//Detect Collision to frog for each Croc
-			if(scene.dangerZone.water.rows[i].crocs[j].detectCollision() === false){
-				theFroggerGame.resetGame();
-			};
-		}
-	}
-
 	
+		};
+	};
+	
+
+	//Let's assume frog is not on log
+	let frogOnLog = false;
+
 	// Draw Each Log 
 	for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
+	
 		for(let j = 0, v = scene.dangerZone.water.rows[i].vehicles.length ; j < v ; j ++){
 			//Move Each Log
 			scene.dangerZone.water.rows[i].vehicles[j].move();
+			
 			//Detect Collision For Each Log
-			if(scene.dangerZone.water.rows[i].vehicles[j].detectCollision() === false){
+			if(scene.dangerZone.water.rows[i].vehicles[j].detectCollision() === true){
+				//Frog is on log, set to true.
+				frogOnLog = true;
+				//Attach the frog to the log
 				theFroggerGame.attachLog(scene.dangerZone.water.rows[i].vehicles[j].speed);
-
 			};
+		};
+
+	};
+
+
+	// If frog is in water area, we only need to check if on log to determine safety. Anything other than logs resets game.
+	if (frogger.y > 100 && frogger.y < 300){
+		if(frogOnLog === false){
+			theFroggerGame.resetGame();
 		}
 	}
+
 	
 	//Draw Frogger
-	frogger.drawFrog();	
+	frogger.drawFrog();
+
+
 
 	//Draw Each Car
 	for(let i = 0, r = scene.dangerZone.street.rows.length; i < r ; i ++){
@@ -434,17 +466,19 @@ const animate = ()=>{
 			//Move Each Car
 			scene.dangerZone.street.rows[i].vehicles[j].move();
 			//Detect Collision For each Car
-			if(scene.dangerZone.street.rows[i].vehicles[j].detectCollision() === false){
+			if(scene.dangerZone.street.rows[i].vehicles[j].detectCollision() === true){
 				theFroggerGame.resetGame();
 			};
-		}
-	}
+		};
+	};
+
 
 	
-	
+	if(control === true){
 
-	window.requestAnimationFrame(animate);
-}
+		window.requestAnimationFrame(animate);
+	}	
+};
 
 scene.drawScene();
 frogger.drawFrog();

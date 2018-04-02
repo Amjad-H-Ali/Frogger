@@ -110,7 +110,7 @@ const scene = {
 		y: 0,//Draw From
 		w: canvas.width,//Size of land Horizontally
 		h: canvas.height/7,//Size of Land Vertically
-		color:'#B2F699',//Color Of Land
+		color:'#D2B4DE ',//Color Of Land
 		drawLand(){ //Draw 3 Peices of land
 			for(let i = 0; i < 3; i ++){
 				ctx.beginPath();
@@ -139,7 +139,7 @@ const scene = {
 					{
 						name:'row1',
 						x:0,
-						y:237,
+						y:252,
 						speed:1,
 						'log count': 3,
 						'croc count': 3,
@@ -149,24 +149,34 @@ const scene = {
 					{	
 						name:'row2',
 						x:0,
-						y:175,
+						y:204,
 						speed:-1,
 						'log count': 2,
 						'croc count': 4,
 						vehicles:[],
 						crocs:[]
 
-					 },
-					 {
+					},
+					{
 					 	name:'row3',
 						x:0,
-						y:112.5,
+						y:156,
 						speed:2,
 						'log count': 4,
 						'croc count': 2, 
 						vehicles:[],
 						crocs:[]
-					 }
+					},
+					{
+					 	name:'row4Water',
+						x:0,
+						y:108,
+						speed:-2,
+						'log count': 4,
+						'croc count': 2, 
+						vehicles:[],
+						crocs:[]
+					}
 				],
 				//Draw Water
 				drawWater(){ 
@@ -183,7 +193,7 @@ const scene = {
 				logFactory(){	
 					for(let i = 0; i < this.rows.length; i ++){
 						for(let j = 0; j < this.rows[i]['log count']; j ++){
-							const newLog = new Log(this.rows[i].x + (j * 200) , this.rows[i].y, 150, 50, scene.dangerZone.color[2], this.rows[i].speed, this.rows[i].name);
+							const newLog = new Log(this.rows[i].x + (j * 200) , this.rows[i].y, 150, 40, scene.dangerZone.color[2], this.rows[i].speed, this.rows[i].name);
 							this.rows[i].vehicles.push(newLog);
 							this.rows[i].vehicles[j].drawVehicle();
 							
@@ -195,7 +205,7 @@ const scene = {
 				crocFactory(){
 					for(let i = 0; i < this.rows.length; i ++){
 						for(let j = 0; j < this.rows[i]['croc count']; j ++){
-							const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * 200) + (j * 200), this.rows[i].y, 150, 50, 'green', this.rows[i].speed, this.rows[i].name)
+							const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * 200) + (j * 200), this.rows[i].y, 150, 40, 'green', this.rows[i].speed, this.rows[i].name)
 							this.rows[i].crocs.push(newCroc);
 							this.rows[i].crocs[j].drawVehicle();
 						}
@@ -210,28 +220,51 @@ const scene = {
 					{
 						name:'row1',
 						x:0,
-						y:542.5,
-						speed:3,
-						'vehicle count': 5,
+						y:560,
+						speed:5,
+						'vehicle count': 2,
+						space: 200,
 						vehicles:[]
 					},
 					{	
 						name:'row2',
 						x:0,
-						y:485,
+						y:520,
 						speed:-5,
-						'vehicle count': 6,
+						'vehicle count': 3,
+						space: 300,
 						vehicles:[]
 
 					},
 					{
 					 	name:'row3',
 						x:0,
-						y:427.5,
+						y:480,
 						speed:8,
-						'vehicle count': 6,
+						'vehicle count': 3,
+						space: 350,
 						vehicles:[]
-					 }
+					 },
+					{
+						name: 'row4',
+						x: 0,
+						y: 440,
+						speed: 3,
+						'vehicle count':3,
+						space:375,
+						vehicles:[]
+
+					},
+					{
+						name: 'row5',
+						x: 0,
+						y: 400,
+						speed: -2,
+						'vehicle count':2,
+						space: 200,
+						vehicles:[]
+
+					}
 				],
 				//Draw Street
 				drawStreet(){
@@ -247,7 +280,7 @@ const scene = {
 				vehicleFactory(){
 					for(let i = 0; i < this.rows.length; i ++){
 						for(let j = 0; j < this.rows[i]['vehicle count']; j ++){
-							const newVehicle = new Vehicle(this.rows[i].x + (200 * j), this.rows[i].y, getRandomSize(), 30, randomColor() , this.rows[i].speed, this.rows[i].name);
+							const newVehicle = new Vehicle(this.rows[i].x + (this.rows[i].space * j), this.rows[i].y, getRandomSize(), 40, randomColor() , this.rows[i].speed, this.rows[i].name);
 							this.rows[i].vehicles.push(newVehicle);
 							this.rows[i].vehicles[j].drawVehicle();
 						}
@@ -284,7 +317,7 @@ class Vehicle {
 			if(this.x > (canvas.width + 150) && this.row !== 'row2'){
 				this.x = -150;
 			}
-			else if(this.x < -150 && this.row === 'row2'){
+			else if(this.x < -150 && (this.row === 'row2' || this.row === 'row5' || this.row === 'row4Water' )){
 
 				this.x = canvas.width +150 ; 
 				

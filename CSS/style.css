@@ -1,8 +1,21 @@
 #canvas{
 	background-color: rgb(255,255,230);
+
 	
 }
 body{
 	background-color: #5D6D7E ;
 	text-align: center;
+}
+.title{
+	margin: 0;
+	font-size: 100px;
+	color:#F4F6F7;
+	font-family: 'Chicle', cursive;
+}
+
+.scoreBoard{
+	font-size: 30px;
+	color:#F4F6F7;
+	font-family: 'Chicle', cursive;
 }

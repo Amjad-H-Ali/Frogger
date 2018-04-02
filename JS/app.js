@@ -1,34 +1,43 @@
 
-
-//Generates Random Color For Cars, 56-255 RGB Because we want bright colors
-const randomColor = ()=>{
-	let red, green, blue;
-
-	red = Math.floor(Math.random() * 200) + 56;
-	
-	green = Math.floor(Math.random() * 200) + 56;
-
-	blue = Math.floor(Math.random() * 200) + 56;
-
-	return 'rgb(' + red + ', ' + green  + ', ' + blue + ')'
+//H3 Tag to imput score and Lives
+let scoreBoard = document.getElementById('scoreBoard')
 
 
-}
-//Get Random Size For Cars 50-149
-const getRandomSize = () =>{
-	return Math.floor((Math.random() * 100) + 50)
-}
 
-//Function To Reset Game
-const resetGame = ()=>{
-	frogger.x = canvas.width/2;
-	frogger.y = canvas.height - 70
-}
-//Function to Attach frog on log
-const attachLog = (logXSpeed,logYSpeed) =>{
-	frogger.x = logXSpeed;
-	frogger.y = logYSpeed;
-}
+
+
+
+const theFroggerGame ={
+	//Generates Random Color For Cars, 56-255 RGB Because we want bright colors
+	randomColor (){
+		let red, green, blue;
+
+		red = Math.floor(Math.random() * 200) + 56;
+		
+		green = Math.floor(Math.random() * 200) + 56;
+
+		blue = Math.floor(Math.random() * 200) + 56;
+
+		return 'rgb(' + red + ', ' + green  + ', ' + blue + ')'
+
+
+	},
+	//Get Random Size For Cars 50-149
+	getRandomSize (){
+		return Math.floor((Math.random() * 100) + 50)
+	},
+
+	//Function To Reset Game
+	resetGame (){
+		frogger.x = canvas.width/2;
+		frogger.y = canvas.height - 70
+	},
+	//Function to Attach frog on log
+	attachLog(logXPosition){
+		frogger.x = logXPosition +(frogger.x -logXPosition);
+		
+	}
+}	
 
 
 //Get Canvas
@@ -40,7 +49,7 @@ document.addEventListener('keydown',(e)=>{
 	//Change Frogger Position when Keys are pressed
 	if(key === 'ArrowRight'){
 
-		frogger.x +=  frogger.speed;
+		frogger.x +=  frogger.speed ;
 	}
 	else if(key === 'ArrowLeft'){
 
@@ -66,7 +75,7 @@ const frogger = {
 	//How Many Lives our Hero will Have
 	life: 5,
 	//The Value to increment/Decrement X,Y when Moving Frog
-	speed : 70,
+	speed : 40,
 	//Position hero in center of width of canvas
 	x: canvas.width/2,
 	y: canvas.height - 70,
@@ -233,7 +242,7 @@ const scene = {
 						x:0,
 						y:560,
 						speed:2,
-						'vehicle count': 2,
+						'vehicle count': 3,
 						space: 200,
 						vehicles:[]
 					},
@@ -251,7 +260,7 @@ const scene = {
 					 	name:'row3',
 						x:0,
 						y:480,
-						speed:2,
+						speed:3,
 						'vehicle count': 3,
 						space: 350,
 						vehicles:[]
@@ -291,7 +300,8 @@ const scene = {
 				vehicleFactory(){
 					for(let i = 0; i < this.rows.length; i ++){
 						for(let j = 0; j < this.rows[i]['vehicle count']; j ++){
-							const newVehicle = new Vehicle(this.rows[i].x + (this.rows[i].space * j), this.rows[i].y, getRandomSize(), 40, randomColor() , this.rows[i].speed, this.rows[i].name);
+							//(x,y,l,h,color,speed, row name)
+							const newVehicle = new Vehicle(this.rows[i].x + (this.rows[i].space * j), this.rows[i].y, theFroggerGame.getRandomSize(), 40, theFroggerGame.randomColor() , this.rows[i].speed, this.rows[i].name);
 							this.rows[i].vehicles.push(newVehicle);
 							this.rows[i].vehicles[j].drawVehicle();
 						}
@@ -323,11 +333,12 @@ class Vehicle {
 			ctx.closePath();
 		}
 		move(){	
-
+			//Conditionals to bring back vehicles on canvas
 
 			if(this.x > (canvas.width + 150) && this.row !== 'row2'){
 				this.x = -150;
 			}
+			//If vehicle is moving in Reverse
 			else if(this.x < -150 && (this.row === 'row2' || this.row === 'row5' || this.row === 'row4Water' )){
 
 				this.x = canvas.width +150 ; 
@@ -341,6 +352,7 @@ class Vehicle {
 
 				
 		}
+		//Detect Collision To Frog
 		detectCollision(){
 			let left = this.x;
 			let right = this.x + this.w;
@@ -350,10 +362,9 @@ class Vehicle {
 			let frogRight = frogger.x + frogger.r;
 			let frogTop = frogger.y;
 			let frogBottom = frogger.y + frogger.r;
+			//If any one of these are true , returns true, meaning not colliding.
+			return (left >= frogRight || right <= frogLeft || top >= frogBottom || bottom <= frogTop)
 
-
-			return (left > frogRight || right < frogLeft || top > frogBottom || bottom < frogTop)
-		
 		}
 	
 }
@@ -383,51 +394,6 @@ class Croc extends Vehicle{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const animate = ()=>{
 	//Draw Scene
 	scene.drawScene();
@@ -435,8 +401,12 @@ const animate = ()=>{
 	// Draw Each Croc
 	for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
 		for(let j = 0, v = scene.dangerZone.water.rows[i].crocs.length ; j < v ; j ++){
-			
+			//Move each croc
 			scene.dangerZone.water.rows[i].crocs[j].move();
+			//Detect Collision to frog for each Croc
+			if(scene.dangerZone.water.rows[i].crocs[j].detectCollision() === false){
+				theFroggerGame.resetGame();
+			};
 		}
 	}
 
@@ -444,9 +414,11 @@ const animate = ()=>{
 	// Draw Each Log 
 	for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
 		for(let j = 0, v = scene.dangerZone.water.rows[i].vehicles.length ; j < v ; j ++){
+			//Move Each Log
 			scene.dangerZone.water.rows[i].vehicles[j].move();
+			//Detect Collision For Each Log
 			if(scene.dangerZone.water.rows[i].vehicles[j].detectCollision() === false){
-				attachLog(scene.dangerZone.water.rows[i].vehicles[j].x, scene.dangerZone.water.rows[i].vehicles[j].y);
+				theFroggerGame.attachLog(scene.dangerZone.water.rows[i].vehicles[j].x);
 			};
 		}
 	}
@@ -457,9 +429,11 @@ const animate = ()=>{
 	//Draw Each Car
 	for(let i = 0, r = scene.dangerZone.street.rows.length; i < r ; i ++){
 		for(let j = 0, v = scene.dangerZone.street.rows[i].vehicles.length ; j < v ; j ++){
+			//Move Each Car
 			scene.dangerZone.street.rows[i].vehicles[j].move();
+			//Detect Collision For each Car
 			if(scene.dangerZone.street.rows[i].vehicles[j].detectCollision() === false){
-				resetGame();
+				theFroggerGame.resetGame();
 			};
 		}
 	}
@@ -476,6 +450,10 @@ frogger.drawFrog();
 scene.dangerZone.street.vehicleFactory()
 scene.dangerZone.water.logFactory()
 scene.dangerZone.water.crocFactory()
+
+
+
+scoreBoard.innerText = 'Lives: ' + frogger.life;
 
 
 

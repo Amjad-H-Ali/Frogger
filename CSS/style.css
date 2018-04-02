@@ -18,4 +18,12 @@ body{
 	font-size: 30px;
 	color:#F4F6F7;
 	font-family: 'Chicle', cursive;
+
+	
+}
+
+h3{
+	display: inline-block;
+	margin-bottom: 0;
+	margin-right: 50px;
 }

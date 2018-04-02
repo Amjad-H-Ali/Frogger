@@ -1,6 +1,7 @@
 
 //H3 Tag to imput score and Lives
-let scoreBoard = document.getElementById('scoreBoard')
+let lives = document.getElementById('lives');
+let score = document.getElementById('score');
 let control = true;
 
 
@@ -9,6 +10,7 @@ let control = true;
 
 //General Game Object
 const theFroggerGame = {
+
 	//Generates Random Color For Cars, 56-255 RGB Because we want bright colors
 	randomColor (){
 		let red, green, blue;
@@ -31,6 +33,7 @@ const theFroggerGame = {
 	//Function To Reset Game
 	resetGame (){
 		frogger.decrementLives();
+		frogger.decrementScore();
 		frogger.x = canvas.width/2;
 		frogger.y = canvas.height - 70
 	},
@@ -42,6 +45,8 @@ const theFroggerGame = {
 	gameOver(){
 		control = false;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		ctx.backGroundColor = 'rgb(0, 0, 0)';
 	}
 	
 }	
@@ -65,6 +70,9 @@ document.addEventListener('keydown',(e)=>{
 	else if(key === 'ArrowUp' ){
 			
 		frogger.y -= frogger.speed;
+		if(frogger.y <= 100){
+			frogger.increaseScore();
+		}
 	}
 	else if(key === 'ArrowDown'){
 			
@@ -80,6 +88,8 @@ document.addEventListener('keydown',(e)=>{
 
 //Make Frog Object
 const frogger = {
+	// Score 
+	score: 0,
 	//How Many Lives our Hero will Have
 	life: 5,
 	//The Value to increment/Decrement X,Y when Moving Frog
@@ -119,10 +129,18 @@ const frogger = {
 	},
 	decrementLives(){
 		this.life -= 1;
-		scoreBoard.innerText = 'Lives: ' + frogger.life;
+		lives.innerText = 'Lives: ' + this.life;
 		if(this.life === 0){
 			theFroggerGame.gameOver();
 		}
+	},
+	increaseScore(){
+		this.score += 100;
+		score.innerText = 'Score: ' + this.score;
+	},
+	decrementScore(){
+		this.score -= 100;
+		score.innerText = 'Score: ' + this.score;
 	}
 
 
@@ -453,6 +471,7 @@ const animate = ()=>{
 			theFroggerGame.resetGame();
 		}
 	}
+	
 
 	
 	//Draw Frogger
@@ -489,7 +508,8 @@ scene.dangerZone.water.crocFactory()
 
 
 
-scoreBoard.innerText = 'Lives: ' + frogger.life;
+lives.innerText = 'Lives: ' + frogger.life ;
+score.innerText = 'Score: ' + frogger.score;
 
 
 

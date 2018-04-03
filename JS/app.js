@@ -35,13 +35,13 @@ const theFroggerGame = {
 	//Get random position for life bug
 	randomPosition(coor){
 
-		return coor === 'x' ?  Math.floor(Math.random() * 700) + 100 : Math.floor(Math.random() * 450) + 100;
+		return coor === 'x' ?  Math.floor(Math.random() * 700) + 100 : (Math.floor(Math.random() * 10) + 3) * 45;
  		//100 - 800//100 - 550
 
 	},
 	//Generate life bug
 	generateBug(){
-		const newBug = new Bug (this.randomPosition('x'), this.randomPosition('y'), 20, 20, 'rgb(255, 0, 0)', 0, undefined );
+		const newBug = new Bug (this.randomPosition('x'), this.randomPosition('y'), 25, 25, 'rgb(255, 0, 0)', 0, undefined );
 		this.bugArray.push(newBug);
 	},
 	//Remove Bug
@@ -55,7 +55,7 @@ const theFroggerGame = {
 		frogger.decrementLives();
 		frogger.decrementScore();
 		frogger.x = canvas.width/2;
-		frogger.y = canvas.height - 70;
+		frogger.y = canvas.height - 75;
 		this.generateBug();
 	},
 	//Function to Attach frog on log
@@ -92,7 +92,7 @@ document.addEventListener('keydown',(e)=>{
 	else if(key === 'ArrowUp' ){
 			
 		frogger.y -= frogger.speed;
-		if(frogger.y <= 100){
+		if(frogger.y < 100){
 			frogger.increaseScore();
 		}
 	}
@@ -115,10 +115,10 @@ const frogger = {
 	//How Many Lives our Hero will Have
 	life: 5,
 	//The Value to increment/Decrement X,Y when Moving Frog
-	speed : 45,
+	speed : 43,
 	//Position hero in center of width of canvas
 	x: canvas.width/2,
-	y: canvas.height - 70,
+	y: canvas.height - 75,
 	r: 10,
 	//Color of Body
 	color: 'rgb(102,153,0)',
@@ -158,7 +158,7 @@ const frogger = {
 	increaseScore(){
 		this.score += 100;
 		this.x = canvas.width/2;
-		this.y = canvas.height -70;
+		this.y = canvas.height - 75;
 		theFroggerGame.generateBug();
 	},
 	decrementScore(){
@@ -217,7 +217,7 @@ const scene = {
 					{
 						name:'row1',
 						x:0,
-						y:252,
+						y:260,
 						speed:1,
 						'log count': 2,
 						'croc count': 2,
@@ -228,7 +228,7 @@ const scene = {
 					{	
 						name:'row2',
 						x:0,
-						y:204,
+						y:220,
 						speed:-1,
 						'log count': 2,
 						'croc count': 3,
@@ -240,7 +240,7 @@ const scene = {
 					{
 					 	name:'row3',
 						x:0,
-						y:156,
+						y:180,
 						speed:2,
 						'log count': 3,
 						'croc count': 1,
@@ -251,8 +251,19 @@ const scene = {
 					{
 					 	name:'row4Water',
 						x:0,
-						y:108,
+						y:140,
 						speed:-2,
+						'log count': 2,
+						'croc count': 2,
+						space:260, 
+						vehicles:[],
+						crocs:[]
+					},
+					{
+					 	name:'row5Water',
+						x:0,
+						y:100,
+						speed:2,
 						'log count': 2,
 						'croc count': 2,
 						space:260, 
@@ -275,7 +286,7 @@ const scene = {
 				logFactory(){	
 					for(let i = 0; i < this.rows.length; i ++){
 						for(let j = 0; j < this.rows[i]['log count']; j ++){
-							const newLog = new Log(this.rows[i].x + (j * this.rows[i].space) , this.rows[i].y, 150, 40, scene.dangerZone.color[2], this.rows[i].speed, this.rows[i].name);
+							const newLog = new Log(this.rows[i].x + (j * this.rows[i].space) , this.rows[i].y, 150, 30, scene.dangerZone.color[2], this.rows[i].speed, this.rows[i].name);
 							this.rows[i].vehicles.push(newLog);
 							this.rows[i].vehicles[j].drawVehicle();
 							
@@ -287,7 +298,7 @@ const scene = {
 				crocFactory(){
 					for(let i = 0; i < this.rows.length; i ++){
 						for(let j = 0; j < this.rows[i]['croc count']; j ++){
-							const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * this.rows[i].space) + (j * 180), this.rows[i].y, 150, 40, 'green', this.rows[i].speed, this.rows[i].name)
+							const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * this.rows[i].space) + (j * 180), this.rows[i].y, 150, 30, 'green', this.rows[i].speed, this.rows[i].name)
 							this.rows[i].crocs.push(newCroc);
 							this.rows[i].crocs[j].drawVehicle();
 						}
@@ -467,7 +478,9 @@ const animate = ()=>{
 	//Draw Scene
 	scene.drawScene();
 
-	
+
+
+
 
 	// Draw Each Croc
 	for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
@@ -509,7 +522,10 @@ const animate = ()=>{
 	}
 	
 
-	
+
+
+
+		
 	//Draw Frogger
 	frogger.drawFrog();
 
@@ -527,6 +543,8 @@ const animate = ()=>{
 		};
 	};
 
+ 
+	
 	//Draw Bug
 	if(theFroggerGame.bugArray[0]){
 		theFroggerGame.bugArray[0].drawVehicle();
@@ -535,8 +553,6 @@ const animate = ()=>{
 			frogger.life += 1;
 		}
 	}
-		 
-
 
 
 	

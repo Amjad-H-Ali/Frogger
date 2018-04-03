@@ -10,6 +10,8 @@ let control = true;
 
 //General Game Object
 const theFroggerGame = {
+	//Where the bugs will be stored
+	bugArray:[],
 
 	//Generates Random Color For Cars, 56-255 RGB Because we want bright colors
 	randomColor (){
@@ -30,12 +32,31 @@ const theFroggerGame = {
 		return Math.floor((Math.random() * 100) + 50)
 	},
 
+	//Get random position for life bug
+	randomPosition(coor){
+
+		return coor === 'x' ?  Math.floor(Math.random() * 700) + 100 : Math.floor(Math.random() * 450) + 100;
+ 		//100 - 800//100 - 550
+
+	},
+	//Generate life bug
+	generateBug(){
+		const newBug = new Bug (this.randomPosition('x'), this.randomPosition('y'), 20, 20, 'rgb(255, 0, 0)', 0, undefined );
+		this.bugArray.push(newBug);
+	},
+	//Remove Bug
+	removeBug(){
+
+		this.bugArray = [];
+	},
+
 	//Function To Reset Game
 	resetGame (){
 		frogger.decrementLives();
 		frogger.decrementScore();
 		frogger.x = canvas.width/2;
-		frogger.y = canvas.height - 70
+		frogger.y = canvas.height - 70;
+		this.generateBug();
 	},
 	//Function to Attach frog on log
 	attachLog(logSpeed){
@@ -47,10 +68,10 @@ const theFroggerGame = {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 		canvas.style.backgroundColor = 'rgb(0, 0, 0)';
-	}
-
+	},
 	
 }	
+
 
 
 //Get Canvas
@@ -102,7 +123,7 @@ const frogger = {
 	//Color of Body
 	color: 'rgb(102,153,0)',
 	//Function to draw body
-	drawFrog(){ 	console.log("drawFrog");
+	drawFrog(){ 	
 
 		//Arms & Legs Width
 		ctx.lineWidth = 3;
@@ -130,7 +151,6 @@ const frogger = {
 	},
 	decrementLives(){
 		this.life -= 1;
-		lives.innerText = 'Lives: ' + this.life;
 		if(this.life === 0){
 			theFroggerGame.gameOver();
 		}
@@ -139,13 +159,12 @@ const frogger = {
 		this.score += 100;
 		this.x = canvas.width/2;
 		this.y = canvas.height -70;
-		score.innerText = 'Score: ' + this.score;
+		theFroggerGame.generateBug();
 	},
 	decrementScore(){
 		if(this.score > 0){
 			this.score -= 100;
-		}	
-			score.innerText = 'Score: ' + this.score;
+		}
 
 	}
 
@@ -429,6 +448,13 @@ class Croc extends Vehicle{
 	}
 }
 
+//Make Life bug Class
+class Bug extends Vehicle{
+	constructor(x,y,w,h,color,speed,row){
+		super(x, y, w, h, color, speed, row);
+	}
+}
+
 
 
 
@@ -501,25 +527,44 @@ const animate = ()=>{
 		};
 	};
 
+	//Draw Bug
+	if(theFroggerGame.bugArray[0]){
+		theFroggerGame.bugArray[0].drawVehicle();
+		if(theFroggerGame.bugArray[0].detectCollision()){
+			theFroggerGame.removeBug();
+			frogger.life += 1;
+		}
+	}
+		 
+
+
+
+	
+	lives.innerText = 'Lives: ' + frogger.life ;
+	score.innerText = 'Score: ' + frogger.score;
+
+
+
 
 	
 	if(control === true){
 
 		window.requestAnimationFrame(animate);
-	}	
+	}
+		
 };
 
+
+//Add Objects into their Associated Arrays
 scene.drawScene();
 frogger.drawFrog();
-
 scene.dangerZone.street.vehicleFactory()
 scene.dangerZone.water.logFactory()
 scene.dangerZone.water.crocFactory()
+theFroggerGame.generateBug()
 
 
 
-lives.innerText = 'Lives: ' + frogger.life ;
-score.innerText = 'Score: ' + frogger.score;
 
 
 

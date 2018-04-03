@@ -2,9 +2,12 @@
 //H3 Tag to imput score and Lives
 let lives = document.getElementById('lives');
 let score = document.getElementById('score');
+let frog = document.getElementById('frog');
 let control = true;
 
-
+//Get Canvas
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 
 
 
@@ -64,19 +67,15 @@ const theFroggerGame = {
 		
 	},
 	gameOver(){
-		control = false;
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-		canvas.style.backgroundColor = 'rgb(0, 0, 0)';
+		frogger.score = 0;
+		frogger.life = 5;
 	},
 	
 }	
 
 
 
-//Get Canvas
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+
 //Add an evnt listener to DOC
 document.addEventListener('keydown',(e)=>{
 	const key = e.key;
@@ -124,30 +123,33 @@ const frogger = {
 	color: 'rgb(102,153,0)',
 	//Function to draw body
 	drawFrog(){ 	
+		
+		// //Arms & Legs Width
+		// ctx.lineWidth = 3;
+		// //Draw Left Arm and Right Leg
+		// ctx.beginPath();
+		// ctx.moveTo(this.x - 15, this.y - 15);
+		// ctx.lineTo(this.x + 15 , this.y + 15);
+		// ctx.strokeStyle = this.color;
 
-		//Arms & Legs Width
-		ctx.lineWidth = 3;
-		//Draw Left Arm and Right Leg
-		ctx.beginPath();
-		ctx.moveTo(this.x - 15, this.y - 15);
-		ctx.lineTo(this.x + 15 , this.y + 15);
-		ctx.strokeStyle = this.color;
+		// ctx.stroke();
+		// //Draw Right Arm and Left Leg
+		// ctx.beginPath();
+		// ctx.moveTo(this.x - 15, this.y + 15);
+		// ctx.lineTo(this.x + 15 , this.y - 15);
+		// ctx.strokeStyle = this.color;
+		// ctx.stroke();
+		// // Draw Body Part
+		// ctx.beginPath();
+ 	// 	console.log(this);
+		// ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+		// ctx.fillStyle = this.color;
+		// ctx.fill();
 
-		ctx.stroke();
-		//Draw Right Arm and Left Leg
-		ctx.beginPath();
-		ctx.moveTo(this.x - 15, this.y + 15);
-		ctx.lineTo(this.x + 15 , this.y - 15);
-		ctx.strokeStyle = this.color;
-		ctx.stroke();
-		// Draw Body Part
-		ctx.beginPath();
- 		console.log(this);
-		ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-		ctx.fillStyle = this.color;
-		ctx.fill();
+		// ctx.closePath();
 
-		ctx.closePath();
+		//Added Sprite Image of Frog
+		ctx.drawImage(frog, this.x - 35, this.y - 25, 70, 50);
 	},
 	decrementLives(){
 		this.life -= 1;
@@ -580,7 +582,7 @@ scene.dangerZone.water.crocFactory()
 theFroggerGame.generateBug()
 
 
-
+// animate();
 
 
 

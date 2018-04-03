@@ -46,8 +46,9 @@ const theFroggerGame = {
 		control = false;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-		ctx.backGroundColor = 'rgb(0, 0, 0)';
+		canvas.style.backgroundColor = 'rgb(0, 0, 0)';
 	}
+
 	
 }	
 
@@ -93,7 +94,7 @@ const frogger = {
 	//How Many Lives our Hero will Have
 	life: 5,
 	//The Value to increment/Decrement X,Y when Moving Frog
-	speed : 40,
+	speed : 45,
 	//Position hero in center of width of canvas
 	x: canvas.width/2,
 	y: canvas.height - 70,
@@ -136,11 +137,16 @@ const frogger = {
 	},
 	increaseScore(){
 		this.score += 100;
+		this.x = canvas.width/2;
+		this.y = canvas.height -70;
 		score.innerText = 'Score: ' + this.score;
 	},
 	decrementScore(){
-		this.score -= 100;
-		score.innerText = 'Score: ' + this.score;
+		if(this.score > 0){
+			this.score -= 100;
+		}	
+			score.innerText = 'Score: ' + this.score;
+
 	}
 
 
@@ -195,7 +201,8 @@ const scene = {
 						y:252,
 						speed:1,
 						'log count': 2,
-						'croc count': 4,
+						'croc count': 2,
+						space: 260,
 						vehicles:[],
 						crocs:[]
 					},
@@ -205,7 +212,8 @@ const scene = {
 						y:204,
 						speed:-1,
 						'log count': 2,
-						'croc count': 4,
+						'croc count': 3,
+						space:240,
 						vehicles:[],
 						crocs:[]
 
@@ -216,7 +224,8 @@ const scene = {
 						y:156,
 						speed:2,
 						'log count': 3,
-						'croc count': 3, 
+						'croc count': 1,
+						space:230, 
 						vehicles:[],
 						crocs:[]
 					},
@@ -226,7 +235,8 @@ const scene = {
 						y:108,
 						speed:-2,
 						'log count': 2,
-						'croc count': 3, 
+						'croc count': 2,
+						space:260, 
 						vehicles:[],
 						crocs:[]
 					}
@@ -246,7 +256,7 @@ const scene = {
 				logFactory(){	
 					for(let i = 0; i < this.rows.length; i ++){
 						for(let j = 0; j < this.rows[i]['log count']; j ++){
-							const newLog = new Log(this.rows[i].x + (j * 180) , this.rows[i].y, 150, 40, scene.dangerZone.color[2], this.rows[i].speed, this.rows[i].name);
+							const newLog = new Log(this.rows[i].x + (j * this.rows[i].space) , this.rows[i].y, 150, 40, scene.dangerZone.color[2], this.rows[i].speed, this.rows[i].name);
 							this.rows[i].vehicles.push(newLog);
 							this.rows[i].vehicles[j].drawVehicle();
 							
@@ -258,7 +268,7 @@ const scene = {
 				crocFactory(){
 					for(let i = 0; i < this.rows.length; i ++){
 						for(let j = 0; j < this.rows[i]['croc count']; j ++){
-							const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * 180) + (j * 180), this.rows[i].y, 150, 40, 'green', this.rows[i].speed, this.rows[i].name)
+							const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * this.rows[i].space) + (j * 180), this.rows[i].y, 150, 40, 'green', this.rows[i].speed, this.rows[i].name)
 							this.rows[i].crocs.push(newCroc);
 							this.rows[i].crocs[j].drawVehicle();
 						}

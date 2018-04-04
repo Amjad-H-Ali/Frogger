@@ -1,14 +1,20 @@
+//Global Variables
 
-//H3 Tag to imput score and Lives
+//H3 Tag to input score and Lives
 let lives = document.getElementById('lives');
 let score = document.getElementById('score');
-let frog = document.getElementById('frog');
+
+//Controls Animation function
 let control = true;
+let sx = 0;
+
 
 //Get Canvas
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-
+//Image Object for Sprites
+const sprites = new Image();
+sprites.src = 'images/spritemap.png';
 
 
 //General Game Object
@@ -79,31 +85,50 @@ const theFroggerGame = {
 //Add an evnt listener to DOC
 document.addEventListener('keydown',(e)=>{
 	const key = e.key;
-	//Change Frogger Position when Keys are pressed
-	if(key === 'ArrowRight'){
 
-		frogger.x +=  frogger.speed ;
-	}
-	else if(key === 'ArrowLeft'){
+	switch(key){
+		
+		case 'ArrowRight':
+			sx = 240;
+			// frogger.direction = 'E';
+			frogger.x +=  frogger.speed;
+			setTimeout(()=>{
+				sx = 160;
+			}, 100);
+			break;
 
-		frogger.x -= frogger.speed;
-	}
-	else if(key === 'ArrowUp' ){
-			
-		frogger.y -= frogger.speed;
-		if(frogger.y < 100){
-			frogger.increaseScore();
-		}
-	}
-	else if(key === 'ArrowDown'){
-			
-		frogger.y += frogger.speed;
+		case 'ArrowLeft':
+			sx = 560;
+			frogger.direction = 'W';
+			frogger.x -= frogger.speed;
+			setTimeout(()=>{
+				sx = 480;
+			}, 100);
+			break;
+		
+		case 'ArrowUp':
+			sx = 80;
+			frogger.direction = 'N';	
+			frogger.y -= frogger.speed;
+			if(frogger.y < 100){
+				frogger.increaseScore();
+			};
+			setTimeout(()=>{
+				sx = 0;
+			}, 100);
+			break;
+		
+		case 'ArrowDown':
+			sx = 400;
+			frogger.direction = 'S';	
+			frogger.y += frogger.speed;
+			setTimeout(()=>{
+				sx = 320;
+			}, 100);
+			break;	
 	}
 
-	//Erase And Draw New Position of Frog And redraw Scene
-	// ctx.clearRect(0, 0, canvas.width, canvas.height);
-	// scene.drawScene();
-	// frogger.drawFrog()
+
 })
 
 
@@ -115,6 +140,8 @@ const frogger = {
 	life: 5,
 	//The Value to increment/Decrement X,Y when Moving Frog
 	speed : 43,
+	//Direction Frog is Facing
+	// direction:'N',
 	//Position hero in center of width of canvas
 	x: canvas.width/2,
 	y: canvas.height - 75,
@@ -148,8 +175,35 @@ const frogger = {
 
 		// ctx.closePath();
 
-		//Added Sprite Image of Frog
-		ctx.drawImage(frog, this.x - 35, this.y - 25, 70, 50);
+		// Added Sprite Image of Frog
+		
+		ctx.drawImage(sprites, sx, 0, 80, 80, this.x - 20, this.y - 20, 45, 45);
+		
+		// setTimeout( () => { 
+
+		// 	switch(this.direction){
+				
+		// 		case 'N':
+		// 			sx = 0;
+		// 			break;
+
+		// 		case 'S':
+		// 			sx = 320;
+		// 			break;
+
+		// 		case 'E':
+		// 			sx = 160;
+		// 			break;
+
+		// 		case 'W':
+		// 			sx = 480;
+		// 			break;
+		// 	};
+		// 	console.log('timeout')
+
+		// }, 3000);
+	
+	
 	},
 	decrementLives(){
 		this.life -= 1;
@@ -220,7 +274,7 @@ const scene = {
 						name:'row1',
 						x:0,
 						y:260,
-						speed:1,
+						speed:2.5,
 						'log count': 2,
 						'croc count': 2,
 						space: 260,
@@ -231,8 +285,8 @@ const scene = {
 						name:'row2',
 						x:0,
 						y:220,
-						speed:-1,
-						'log count': 2,
+						speed:-2,
+						'log count': 1,
 						'croc count': 3,
 						space:240,
 						vehicles:[],
@@ -243,8 +297,8 @@ const scene = {
 					 	name:'row3',
 						x:0,
 						y:180,
-						speed:2,
-						'log count': 3,
+						speed:3,
+						'log count': 2,
 						'croc count': 1,
 						space:230, 
 						vehicles:[],
@@ -255,7 +309,7 @@ const scene = {
 						x:0,
 						y:140,
 						speed:-2,
-						'log count': 2,
+						'log count': 1,
 						'croc count': 2,
 						space:260, 
 						vehicles:[],
@@ -265,7 +319,7 @@ const scene = {
 					 	name:'row5Water',
 						x:0,
 						y:100,
-						speed:2,
+						speed:3,
 						'log count': 2,
 						'croc count': 2,
 						space:260, 
@@ -376,7 +430,7 @@ const scene = {
 					for(let i = 0; i < this.rows.length; i ++){
 						for(let j = 0; j < this.rows[i]['vehicle count']; j ++){
 							//(x,y,l,h,color,speed, row name)
-							const newVehicle = new Vehicle(this.rows[i].x + (this.rows[i].space * j), this.rows[i].y, theFroggerGame.getRandomSize(), 40, theFroggerGame.randomColor() , this.rows[i].speed, this.rows[i].name);
+							const newVehicle = new Vehicle(this.rows[i].x + (this.rows[i].space * j), this.rows[i].y, /*theFroggerGame.getRandomSize()*/ 40, 40, theFroggerGame.randomColor() , this.rows[i].speed, this.rows[i].name);
 							this.rows[i].vehicles.push(newVehicle);
 							this.rows[i].vehicles[j].drawVehicle();
 						}
@@ -401,11 +455,14 @@ class Vehicle {
 			this.row = row;
 		}
 		drawVehicle(){
-			ctx.beginPath();
-			ctx.rect(this.x, this.y, this.w, this.h)
-			ctx.fillStyle = this.color;
-			ctx.fill();
-			ctx.closePath();
+			// ctx.beginPath();
+			// ctx.rect(this.x, this.y, this.w, this.h)
+			// ctx.fillStyle = this.color;
+			// ctx.fill();
+			// ctx.closePath();
+			ctx.drawImage(sprites, 0, 80, 80, 80, this.x, this.y, this.w, this.h);
+
+
 		}
 		move(){	
 			//Conditionals to bring back vehicles on canvas

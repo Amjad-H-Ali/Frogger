@@ -51,8 +51,35 @@ const theFroggerGame = {
 		
 	},
 	gameOver(){
-		frogger.score = 0;
-		frogger.life = 5;
+		this.initialize();
+
+	},
+	initialize() {
+		// remove old things from array	
+		// loop set street vehicles length to 0
+		// loop set water vehicles (logs) lenght to 0
+		// loop set crocs length to 0
+		for(let i = 0, r = scene.dangerZone.street.rows.length; i < r ; i ++){
+			scene.dangerZone.street.rows[i].vehicles.length = 0;
+		}
+
+		for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
+			scene.dangerZone.water.rows[i].vehicles.length = 0;
+			scene.dangerZone.water.rows[i].crocs.length = 0;
+		}	
+
+		// set everything back to the way it is at the beginning
+		// set round number back to zero, 
+		// set lives back to 5	
+		frogger.life  =  5;	
+		this.round = 1;
+		scene.drawScene();
+		frogger.drawFrog();
+		scene.dangerZone.street.vehicleFactory()
+		scene.dangerZone.water.logFactory()
+		scene.dangerZone.water.crocFactory()
+		this.generateBug()
+		console.log('initialize');
 	},
 	changeRound(){
 		this.round += 1;
@@ -60,14 +87,36 @@ const theFroggerGame = {
 		for(let i = 0, r = scene.dangerZone.street.rows.length; i < r ; i ++){
 			for(let j = 0, v = scene.dangerZone.street.rows[i].vehicles.length ; j < v ; j ++){
 				if(scene.dangerZone.street.rows[i].name !== 'row2' && scene.dangerZone.street.rows[i].name !== 'row5'){ 
-					scene.dangerZone.street.rows[i].vehicles[j].speed +=1
+					scene.dangerZone.street.rows[i].vehicles[j].speed += .5;
 				}
-				else{scene.dangerZone.street.rows[i].vehicles[j].speed -=1}
+				else scene.dangerZone.street.rows[i].vehicles[j].speed -= .5;
 			}					
-		}	
+		}
+
+
+		for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
+			for(let j = 0, v = scene.dangerZone.water.rows[i].vehicles.length ; j < v ; j ++){
+				if(scene.dangerZone.water.rows[i].name !== 'row2' && scene.dangerZone.water.rows[i].name !== 'row4Water'){ 
+					scene.dangerZone.water.rows[i].vehicles[j].speed += .5;
+				}
+				else scene.dangerZone.water.rows[i].vehicles[j].speed -= .5;
+			}
+
+			for(let j = 0, v = scene.dangerZone.water.rows[i].crocs.length ; j < v ; j ++){
+				if(scene.dangerZone.water.rows[i].name !== 'row2' && scene.dangerZone.water.rows[i].name !== 'row4Water'){ 
+					scene.dangerZone.water.rows[i].crocs[j].speed += .5;
+				}
+				else scene.dangerZone.water.rows[i].crocs[j].speed -= .5;
+			}					
+		}
+
+		console.log('round');
 	}
+
 	
-}	
+}
+
+
 
 const pause = document.getElementById('pause');
 
@@ -89,7 +138,7 @@ document.addEventListener('keydown',(e)=>{
 				frogger.x +=  frogger.speed;
 				setTimeout(()=>{
 					frogger.sx = 160;
-				}, 175);
+				}, 150);
 				break;
 
 			case 'ArrowLeft':
@@ -97,7 +146,7 @@ document.addEventListener('keydown',(e)=>{
 				frogger.x -= frogger.speed;
 				setTimeout(()=>{
 					frogger.sx = 480;
-				}, 175);
+				}, 150);
 				break;
 			
 			case 'ArrowUp':
@@ -108,7 +157,7 @@ document.addEventListener('keydown',(e)=>{
 				};
 				setTimeout(()=>{
 					frogger.sx = 0;
-				}, 175);
+				}, 150);
 				break;
 			
 			case 'ArrowDown':
@@ -116,7 +165,7 @@ document.addEventListener('keydown',(e)=>{
 				frogger.y += frogger.speed;
 				setTimeout(()=>{
 					frogger.sx = 320;
-				}, 175);
+				}, 150);
 				break;	
 		};
 	};
@@ -145,7 +194,7 @@ const frogger = {
 	//Function to draw body
 	drawFrog(){ 	
 		
-		// //Arms & Legs Width
+		//Arms & Legs Width
 		// ctx.lineWidth = 3;
 		// //Draw Left Arm and Right Leg
 		// ctx.beginPath();
@@ -226,20 +275,24 @@ const frogger = {
 	},
 	die(){
 		this.alive = false;
+
+		
+		
 		this.decrementLives();
 		this.decrementScore();
-		;
 		
-		this.sx = 640;
 		
+		
+		setTimeout(()=>{this.sx = 640;
+		},155)
 		setTimeout(()=>{
 			this.sx = 720;
 			console.log('time2');
-		},700)
+		},500)
 		setTimeout(()=>{
 			this.sx = 800;
 			console.log('time3');
-		},1400)
+		},1200)
 		setTimeout(()=>{
 			this.sx = 0;
 			this.x = canvas.width/2;
@@ -407,8 +460,8 @@ const scene = {
 						x:0,
 						y:560,
 						speed:3,
-						'vehicle count': 3,
-						space: 200,
+						'vehicle count': 4,
+						space: 400,
 						vehicleImg:['car2', 'car3'],
 						vehicles:[]
 					},
@@ -418,7 +471,7 @@ const scene = {
 						y:520,
 						speed:-4,
 						'vehicle count': 3,
-						space: 300,
+						space: 400,
 						vehicleImg:['car1', 'car4', 'car5'],
 						vehicles:[]
 
@@ -439,7 +492,7 @@ const scene = {
 						y: 440,
 						speed: 2,
 						'vehicle count':5,
-						space:375,
+						space:200,
 						vehicleImg:['car2', 'car3'],
 						vehicles:[]
 
@@ -449,8 +502,8 @@ const scene = {
 						x: 0,
 						y: 400,
 						speed: -2,
-						'vehicle count':2,
-						space: 200,
+						'vehicle count':3,
+						space: 300,
 						vehicleImg:['car1', 'car4', 'car5'],
 						vehicles:[]
 
@@ -682,8 +735,11 @@ const animate = ()=>{
 
 
 		
+	
 	//Draw Frogger
 	frogger.drawFrog();
+
+
 
 
 
@@ -695,20 +751,21 @@ const animate = ()=>{
 			//Detect Collision For each Car
 			if(scene.dangerZone.street.rows[i].vehicles[j].detectCollision() === true && frogger.alive === true){
 				frogger.die();
+
 			};
 		};
 	};
 
  
-	
 	//Draw Bug
 	if(theFroggerGame.bugArray[0]){
 		theFroggerGame.bugArray[0].drawVehicle();
 		if(theFroggerGame.bugArray[0].detectCollision()){
 			theFroggerGame.removeBug();
-			frogger.life += 1;
+			frogger.score += 200;
 		}
 	}
+	
 
 
 	
@@ -731,13 +788,8 @@ const animate = ()=>{
 lives.innerText = 'Lives: ' + frogger.life ;
 score.innerText = 'Score: ' + frogger.score;
 
-scene.drawScene();
-frogger.drawFrog();
-scene.dangerZone.street.vehicleFactory()
-scene.dangerZone.water.logFactory()
-scene.dangerZone.water.crocFactory()
-theFroggerGame.generateBug()
 
+theFroggerGame.initialize()
 
 // animate();
 

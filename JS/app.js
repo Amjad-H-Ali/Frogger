@@ -63,10 +63,10 @@ const theFroggerGame = {
 
 	//Function To Reset Game
 	resetGame (){
+		frogger.alive = false;
+		frogger.dieAnimation();
 		frogger.decrementLives();
 		frogger.decrementScore();
-		frogger.x = canvas.width/2;
-		frogger.y = canvas.height - 75;
 		this.generateBug();
 	},
 	//Function to Attach frog on log
@@ -140,6 +140,8 @@ const frogger = {
 	speed : 43,
 	//The x position of the frogger sprite in the sheet
 	sx:0,
+	//Dead or alive
+	alive: true,
 	//Position hero in center of width of canvas
 	x: canvas.width/2,
 	y: canvas.height - 75,
@@ -219,6 +221,26 @@ const frogger = {
 		if(this.score > 0){
 			this.score -= 100;
 		}
+
+	},
+	dieAnimation(){
+		
+		this.sx = 640;
+		
+		setTimeout(()=>{
+			this.sx = 720;
+			console.log('time2');
+		},500)
+		setTimeout(()=>{
+			this.sx = 800;
+			console.log('time3');
+		},1000)
+		setTimeout(()=>{
+			this.sx = 0;
+			this.x = canvas.width/2;
+			this.y = canvas.height -75;
+			this.alive = true;
+		},1500)
 
 	}
 
@@ -665,7 +687,7 @@ const animate = ()=>{
 			//Move Each Car
 			scene.dangerZone.street.rows[i].vehicles[j].move();
 			//Detect Collision For each Car
-			if(scene.dangerZone.street.rows[i].vehicles[j].detectCollision() === true){
+			if(scene.dangerZone.street.rows[i].vehicles[j].detectCollision() === true && frogger.alive === true){
 				theFroggerGame.resetGame();
 			};
 		};

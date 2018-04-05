@@ -242,7 +242,7 @@ const scene = {
 		y: 0,//Draw From
 		w: canvas.width,//Size of land Horizontally
 		h: canvas.height/7,//Size of Land Vertically
-		color:'#D2B4DE ',//Color Of Land
+		color: '#7D3C98',//Color Of Land
 		drawLand(){ //Draw 3 Peices of land
 			for(let i = 0; i < 3; i ++){
 				ctx.beginPath();
@@ -262,7 +262,7 @@ const scene = {
 			y: canvas.height/7,//Where to draw from
 			w: canvas.width,
 			h: canvas.height/3.5, //Two Times bigger than land
-			color: ['#1491CB','rgb(0,0,0)','#C28F2E'],
+			color: ['#3498DB','rgb(0,0,0)','#C28F2E'],
 			//Water Object
 			water:{
 				//Rows In The Water
@@ -273,9 +273,9 @@ const scene = {
 						x:0,
 						y:260,
 						speed:2.5,
-						'log count': 2,
+						'log count': 3,
 						'croc count': 2,
-						space: 260,
+						space: 300,
 						vehicles:[],
 						logImg:'log1',
 						crocImg: 'croc1',
@@ -285,10 +285,10 @@ const scene = {
 						name:'row2',
 						x:0,
 						y:220,
-						speed:-2,
-						'log count': 1,
+						speed:-3,
+						'log count': 2,
 						'croc count': 3,
-						space:240,
+						space:275,
 						vehicles:[],
 						logImg:'log1',
 						crocImg:'croc2',
@@ -302,7 +302,7 @@ const scene = {
 						speed:3,
 						'log count': 2,
 						'croc count': 1,
-						space:230, 
+						space:375, 
 						vehicles:[],
 						logImg:'log1',
 						crocImg:'croc1',
@@ -315,7 +315,7 @@ const scene = {
 						speed:-2,
 						'log count': 1,
 						'croc count': 2,
-						space:260, 
+						space:250, 
 						vehicles:[],
 						logImg:'log1',
 						crocImg:'croc2',
@@ -328,7 +328,7 @@ const scene = {
 						speed:3,
 						'log count': 2,
 						'croc count': 2,
-						space:260, 
+						space:270, 
 						vehicles:[],
 						logImg:'log1',
 						crocImg:'croc1',
@@ -378,7 +378,7 @@ const scene = {
 						name:'row1',
 						x:0,
 						y:560,
-						speed:2,
+						speed:3,
 						'vehicle count': 3,
 						space: 200,
 						vehicleImg:['car2', 'car3'],
@@ -388,7 +388,7 @@ const scene = {
 						name:'row2',
 						x:0,
 						y:520,
-						speed:-2,
+						speed:-4,
 						'vehicle count': 3,
 						space: 300,
 						vehicleImg:['car1', 'car4', 'car5'],
@@ -410,7 +410,7 @@ const scene = {
 						x: 0,
 						y: 440,
 						speed: 2,
-						'vehicle count':3,
+						'vehicle count':5,
 						space:375,
 						vehicleImg:['car2', 'car3'],
 						vehicles:[]

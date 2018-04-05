@@ -1,6 +1,7 @@
 #canvas{
 	background-color: rgb(255,255,230);
 	box-shadow: 25px 45px 50px black;
+	border-radius: 5%;
 
 	
 }

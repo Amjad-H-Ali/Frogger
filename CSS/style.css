@@ -6,20 +6,21 @@
 	
 }
 body{
-	background-color: #5D6D7E ;
+	background-color: #D5D8DC ;
 	text-align: center;
 }
 .title{
 	margin: 0;
 	font-size: 100px;
-	color:#F4F6F7;
+	color:#FDFEFE;
 	font-family: 'Chicle', cursive;
 }
 
 .scoreBoard{
 	font-size: 30px;
-	color:#F4F6F7;
+	color:#FDFEFE ;
 	font-family: 'Chicle', cursive;
+	margin-bottom: 5px;
 
 	
 }
@@ -27,10 +28,14 @@ body{
 h3{
 	display: inline-block;
 	margin-bottom: 0;
-	margin-right: 50px;
+	margin-right: 100px;
 }
 
 img{
-	height: 40px;
-	width:40px;
+	width:35px;
+}
+
+img:hover{
+	width:37px;
+	margin-left:-2px;
 }

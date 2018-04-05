@@ -21,27 +21,11 @@ sprites3.src = 'images/bug.png';
 
 //General Game Object
 const theFroggerGame = {
+
+	round: 1,
+
 	//Where the bugs will be stored
 	bugArray:[],
-
-	//Generates Random Color For Cars, 56-255 RGB Because we want bright colors
-	randomColor (){
-		let red, green, blue;
-
-		red = Math.floor(Math.random() * 200) + 56;
-		
-		green = Math.floor(Math.random() * 200) + 56;
-
-		blue = Math.floor(Math.random() * 200) + 56;
-
-		return 'rgb(' + red + ', ' + green  + ', ' + blue + ')'
-
-
-	},
-	//Get Random Size For Cars 50-149
-	getRandomSize (){
-		return Math.floor((Math.random() * 100) + 50)
-	},
 
 	//Get random position for life bug
 	randomPosition(coor){
@@ -61,14 +45,6 @@ const theFroggerGame = {
 		this.bugArray = [];
 	},
 
-	//Function To Reset Game
-	resetGame (){
-		frogger.alive = false;
-		frogger.dieAnimation();
-		frogger.decrementLives();
-		frogger.decrementScore();
-		this.generateBug();
-	},
 	//Function to Attach frog on log
 	attachLog(logSpeed){
 		frogger.x += logSpeed;
@@ -78,9 +54,26 @@ const theFroggerGame = {
 		frogger.score = 0;
 		frogger.life = 5;
 	},
+	changeRound(){
+		this.round += 1;
+
+		for(let i = 0, r = scene.dangerZone.street.rows.length; i < r ; i ++){
+			for(let j = 0, v = scene.dangerZone.street.rows[i].vehicles.length ; j < v ; j ++){
+				if(scene.dangerZone.street.rows[i].name !== 'row2' && scene.dangerZone.street.rows[i].name !== 'row5'){ 
+					scene.dangerZone.street.rows[i].vehicles[j].speed +=1
+				}
+				else{scene.dangerZone.street.rows[i].vehicles[j].speed -=1}
+			}					
+		}	
+	}
 	
 }	
 
+const pause = document.getElementById('pause');
+
+pause.addEventListener('click',(e)=>{
+	control === false ? (control = true, animate()) : control = false; 
+})
 
 
 
@@ -88,44 +81,45 @@ const theFroggerGame = {
 document.addEventListener('keydown',(e)=>{
 	const key = e.key;
 
-	switch(key){
-		
-		case 'ArrowRight':
-			frogger.sx = 240;
-			frogger.x +=  frogger.speed;
-			setTimeout(()=>{
-				frogger.sx = 160;
-			}, 100);
-			break;
+	if(frogger.alive) {
+		switch(key){
+			
+			case 'ArrowRight':
+				frogger.sx = 240;
+				frogger.x +=  frogger.speed;
+				setTimeout(()=>{
+					frogger.sx = 160;
+				}, 175);
+				break;
 
-		case 'ArrowLeft':
-			frogger.sx = 560;
-			frogger.x -= frogger.speed;
-			setTimeout(()=>{
-				frogger.sx = 480;
-			}, 100);
-			break;
-		
-		case 'ArrowUp':
-			frogger.sx = 80;	
-			frogger.y -= frogger.speed;
-			if(frogger.y < 100){
-				frogger.increaseScore();
-			};
-			setTimeout(()=>{
-				frogger.sx = 0;
-			}, 100);
-			break;
-		
-		case 'ArrowDown':
-			frogger.sx = 400;	
-			frogger.y += frogger.speed;
-			setTimeout(()=>{
-				frogger.sx = 320;
-			}, 100);
-			break;	
-	}
-
+			case 'ArrowLeft':
+				frogger.sx = 560;
+				frogger.x -= frogger.speed;
+				setTimeout(()=>{
+					frogger.sx = 480;
+				}, 175);
+				break;
+			
+			case 'ArrowUp':
+				frogger.sx = 80;	
+				frogger.y -= frogger.speed;
+				if(frogger.y < 80){
+					frogger.increaseScore();
+				};
+				setTimeout(()=>{
+					frogger.sx = 0;
+				}, 175);
+				break;
+			
+			case 'ArrowDown':
+				frogger.sx = 400;	
+				frogger.y += frogger.speed;
+				setTimeout(()=>{
+					frogger.sx = 320;
+				}, 175);
+				break;	
+		};
+	};
 
 })
 
@@ -213,9 +207,16 @@ const frogger = {
 	},
 	increaseScore(){
 		this.score += 100;
-		this.x = canvas.width/2;
-		this.y = canvas.height - 75;
-		theFroggerGame.generateBug();
+		control = false;
+		theFroggerGame.changeRound();
+		setTimeout(()=>{
+			this.x = canvas.width/2;
+			this.y = canvas.height - 75;
+			theFroggerGame.generateBug();
+			control = true;
+			animate();
+		},700);
+			
 	},
 	decrementScore(){
 		if(this.score > 0){
@@ -223,24 +224,29 @@ const frogger = {
 		}
 
 	},
-	dieAnimation(){
+	die(){
+		this.alive = false;
+		this.decrementLives();
+		this.decrementScore();
+		;
 		
 		this.sx = 640;
 		
 		setTimeout(()=>{
 			this.sx = 720;
 			console.log('time2');
-		},500)
+		},700)
 		setTimeout(()=>{
 			this.sx = 800;
 			console.log('time3');
-		},1000)
+		},1400)
 		setTimeout(()=>{
 			this.sx = 0;
 			this.x = canvas.width/2;
 			this.y = canvas.height -75;
 			this.alive = true;
-		},1500)
+			theFroggerGame.generateBug()
+		},2400)
 
 	}
 
@@ -264,7 +270,7 @@ const scene = {
 		y: 0,//Draw From
 		w: canvas.width,//Size of land Horizontally
 		h: canvas.height/7,//Size of Land Vertically
-		color: '#7D3C98',//Color Of Land
+		color: '#A569BD',//Color Of Land
 		drawLand(){ //Draw 3 Peices of land
 			for(let i = 0; i < 3; i ++){
 				ctx.beginPath();
@@ -284,7 +290,7 @@ const scene = {
 			y: canvas.height/7,//Where to draw from
 			w: canvas.width,
 			h: canvas.height/3.5, //Two Times bigger than land
-			color: ['#3498DB','rgb(0,0,0)','#C28F2E'],
+			color: ['#3498DB','#566573','#C28F2E'],
 			//Water Object
 			water:{
 				//Rows In The Water
@@ -344,7 +350,7 @@ const scene = {
 						crocs:[]
 					},
 					{
-					 	name:'row5Water',
+					 	name:'row5',
 						x:0,
 						y:100,
 						speed:3,
@@ -648,7 +654,7 @@ const animate = ()=>{
 			scene.dangerZone.water.rows[i].vehicles[j].move();
 			
 			//Detect Collision For Each Log
-			if(scene.dangerZone.water.rows[i].vehicles[j].detectCollision() === true){
+			if(scene.dangerZone.water.rows[i].vehicles[j].detectCollision() === true && frogger.alive === true){
 				//Frog is on log, set to true.
 				frogOnLog = true;
 				//Attach the frog to the log
@@ -666,8 +672,8 @@ const animate = ()=>{
 
 	// If frog is in water area, we only need to check if on log to determine safety. Anything other than logs resets game.
 	if (frogger.y > 100 && frogger.y < 300){
-		if(frogOnLog === false){
-			theFroggerGame.resetGame();
+		if(frogOnLog === false && frogger.alive === true){
+			frogger.die();
 		}
 	}
 	
@@ -688,7 +694,7 @@ const animate = ()=>{
 			scene.dangerZone.street.rows[i].vehicles[j].move();
 			//Detect Collision For each Car
 			if(scene.dangerZone.street.rows[i].vehicles[j].detectCollision() === true && frogger.alive === true){
-				theFroggerGame.resetGame();
+				frogger.die();
 			};
 		};
 	};
@@ -722,6 +728,9 @@ const animate = ()=>{
 
 
 //Add Objects into their Associated Arrays
+lives.innerText = 'Lives: ' + frogger.life ;
+score.innerText = 'Score: ' + frogger.score;
+
 scene.drawScene();
 frogger.drawFrog();
 scene.dangerZone.street.vehicleFactory()

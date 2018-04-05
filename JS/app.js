@@ -6,8 +6,6 @@ let score = document.getElementById('score');
 
 //Controls Animation function
 let control = true;
-let sx = 0;
-
 
 //Get Canvas
 const canvas = document.getElementById('canvas');
@@ -15,6 +13,8 @@ const ctx = canvas.getContext('2d');
 //Image Object for Sprites
 const sprites = new Image();
 sprites.src = 'images/spritemap.png';
+const sprites2 = new Image();
+sprites2.src = 'images/croc.png';
 
 
 //General Game Object
@@ -89,41 +89,41 @@ document.addEventListener('keydown',(e)=>{
 	switch(key){
 		
 		case 'ArrowRight':
-			sx = 240;
+			frogger.sx = 240;
 			// frogger.direction = 'E';
 			frogger.x +=  frogger.speed;
 			setTimeout(()=>{
-				sx = 160;
+				frogger.sx = 160;
 			}, 100);
 			break;
 
 		case 'ArrowLeft':
-			sx = 560;
+			frogger.sx = 560;
 			frogger.direction = 'W';
 			frogger.x -= frogger.speed;
 			setTimeout(()=>{
-				sx = 480;
+				frogger.sx = 480;
 			}, 100);
 			break;
 		
 		case 'ArrowUp':
-			sx = 80;
+			frogger.sx = 80;
 			frogger.direction = 'N';	
 			frogger.y -= frogger.speed;
 			if(frogger.y < 100){
 				frogger.increaseScore();
 			};
 			setTimeout(()=>{
-				sx = 0;
+				frogger.sx = 0;
 			}, 100);
 			break;
 		
 		case 'ArrowDown':
-			sx = 400;
+			frogger.sx = 400;
 			frogger.direction = 'S';	
 			frogger.y += frogger.speed;
 			setTimeout(()=>{
-				sx = 320;
+				frogger.sx = 320;
 			}, 100);
 			break;	
 	}
@@ -140,8 +140,8 @@ const frogger = {
 	life: 5,
 	//The Value to increment/Decrement X,Y when Moving Frog
 	speed : 43,
-	//Direction Frog is Facing
-	// direction:'N',
+	//The x position of the frogger sprite in the sheet
+	sx:0,
 	//Position hero in center of width of canvas
 	x: canvas.width/2,
 	y: canvas.height - 75,
@@ -177,7 +177,7 @@ const frogger = {
 
 		// Added Sprite Image of Frog
 		
-		ctx.drawImage(sprites, sx, 0, 80, 80, this.x - 20, this.y - 20, 45, 45);
+		ctx.drawImage(sprites, this.sx, 0, 80, 80, this.x - 20, this.y - 20, 45, 45);
 		
 		// setTimeout( () => { 
 
@@ -279,6 +279,8 @@ const scene = {
 						'croc count': 2,
 						space: 260,
 						vehicles:[],
+						logImg:'log1',
+						crocImg: 'croc1',
 						crocs:[]
 					},
 					{	
@@ -290,6 +292,8 @@ const scene = {
 						'croc count': 3,
 						space:240,
 						vehicles:[],
+						logImg:'log1',
+						crocImg:'croc2',
 						crocs:[]
 
 					},
@@ -302,6 +306,8 @@ const scene = {
 						'croc count': 1,
 						space:230, 
 						vehicles:[],
+						logImg:'log1',
+						crocImg:'croc1',
 						crocs:[]
 					},
 					{
@@ -313,6 +319,8 @@ const scene = {
 						'croc count': 2,
 						space:260, 
 						vehicles:[],
+						logImg:'log1',
+						crocImg:'croc2',
 						crocs:[]
 					},
 					{
@@ -324,6 +332,8 @@ const scene = {
 						'croc count': 2,
 						space:260, 
 						vehicles:[],
+						logImg:'log1',
+						crocImg:'croc1',
 						crocs:[]
 					}
 				],
@@ -340,9 +350,9 @@ const scene = {
 				},
 				//Generate Logs And Push To Each Row
 				logFactory(){	
-					for(let i = 0; i < this.rows.length; i ++){
-						for(let j = 0; j < this.rows[i]['log count']; j ++){
-							const newLog = new Log(this.rows[i].x + (j * this.rows[i].space) , this.rows[i].y, 150, 30, scene.dangerZone.color[2], this.rows[i].speed, this.rows[i].name);
+					for(let i = 0, len = this.rows.length; i < len; i ++){
+						for(let j = 0, lc = this.rows[i]['log count'] ; j < lc; j ++){
+							const newLog = new Log(this.rows[i].x + (j * this.rows[i].space) , this.rows[i].y, 40, this.rows[i].speed, this.rows[i].name, this.rows[i].logImg);
 							this.rows[i].vehicles.push(newLog);
 							this.rows[i].vehicles[j].drawVehicle();
 							
@@ -352,9 +362,9 @@ const scene = {
 					
 				},
 				crocFactory(){
-					for(let i = 0; i < this.rows.length; i ++){
-						for(let j = 0; j < this.rows[i]['croc count']; j ++){
-							const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * this.rows[i].space) + (j * 180), this.rows[i].y, 150, 30, 'green', this.rows[i].speed, this.rows[i].name)
+					for(let i = 0, len = this.rows.length; i < len ; i ++){
+						for(let j = 0, cc = this.rows[i]['croc count']; j < cc; j ++){
+							const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * this.rows[i].space) + (j * 180), this.rows[i].y, 40, this.rows[i].speed, this.rows[i].name, this.rows[i].crocImg)
 							this.rows[i].crocs.push(newCroc);
 							this.rows[i].crocs[j].drawVehicle();
 						}
@@ -373,6 +383,7 @@ const scene = {
 						speed:2,
 						'vehicle count': 3,
 						space: 200,
+						vehicleImg:['car2', 'car3'],
 						vehicles:[]
 					},
 					{	
@@ -382,6 +393,7 @@ const scene = {
 						speed:-2,
 						'vehicle count': 3,
 						space: 300,
+						vehicleImg:['car1', 'car4', 'car5'],
 						vehicles:[]
 
 					},
@@ -392,6 +404,7 @@ const scene = {
 						speed:3,
 						'vehicle count': 3,
 						space: 350,
+						vehicleImg:['car2', 'car3'],
 						vehicles:[]
 					 },
 					{
@@ -401,6 +414,7 @@ const scene = {
 						speed: 2,
 						'vehicle count':3,
 						space:375,
+						vehicleImg:['car2', 'car3'],
 						vehicles:[]
 
 					},
@@ -411,6 +425,7 @@ const scene = {
 						speed: -2,
 						'vehicle count':2,
 						space: 200,
+						vehicleImg:['car1', 'car4', 'car5'],
 						vehicles:[]
 
 					}
@@ -427,14 +442,14 @@ const scene = {
 				},
 				//Generate Vehicles And Push To Each Row
 				vehicleFactory(){
-					for(let i = 0; i < this.rows.length; i ++){
-						for(let j = 0; j < this.rows[i]['vehicle count']; j ++){
+					for(let i = 0, len = this.rows.length; i < len ; i ++){
+						for(let j = 0, vc = this.rows[i]['vehicle count']; j < vc; j++){
 							//(x,y,l,h,color,speed, row name)
-							const newVehicle = new Vehicle(this.rows[i].x + (this.rows[i].space * j), this.rows[i].y, /*theFroggerGame.getRandomSize()*/ 40, 40, theFroggerGame.randomColor() , this.rows[i].speed, this.rows[i].name);
+							const newVehicle = new Vehicle(this.rows[i].x + (this.rows[i].space * j), this.rows[i].y, 40, this.rows[i].speed, this.rows[i].name, this.rows[i].vehicleImg[Math.floor( Math.random() * this.rows[i].vehicleImg.length)]);
 							this.rows[i].vehicles.push(newVehicle);
 							this.rows[i].vehicles[j].drawVehicle();
-						}
-					}	
+						};
+					};	
 						
 
 				}
@@ -445,14 +460,15 @@ const scene = {
 
 //Make A Vehicle Class
 class Vehicle {
-		constructor(x,y,w,h,color,speed,row){
+		constructor(x, y, h, speed, row, img){
 			this.x = x;
 			this.y = y;
-			this.w = w;
+			this.w = 40;
 			this.h = h;
-			this.color = color;
 			this.speed = speed;
 			this.row = row;
+			this.img = img;
+
 		}
 		drawVehicle(){
 			// ctx.beginPath();
@@ -460,7 +476,57 @@ class Vehicle {
 			// ctx.fillStyle = this.color;
 			// ctx.fill();
 			// ctx.closePath();
-			ctx.drawImage(sprites, 0, 80, 80, 80, this.x, this.y, this.w, this.h);
+
+			switch(this.img){
+				case 'car1':
+
+					ctx.drawImage(sprites, 0, 80, 80, 80, this.x, this.y, this.w, this.h);
+					break;
+
+				case 'car2':
+					ctx.drawImage(sprites, 80, 80, 80, 80, this.x, this.y, this.w, this.h);
+					break;
+
+				case 'car3':
+					ctx.drawImage(sprites, 160, 80, 80, 80, this.x, this.y, this.w, this.h);
+					break;
+
+				case 'car4':
+					ctx.drawImage(sprites, 240, 80, 80, 80, this.x, this.y, this.w, this.h);
+					break;
+
+				case 'car5':
+					this.w = 130;
+					ctx.drawImage(sprites, 320, 80, 130, 80, this.x, this.y, this.w, this.h);
+					break;
+				case 'log1':
+					this.w = 180;
+					ctx.drawImage(sprites, 8, 160, 180, 80, this.x, this.y, this.w, this.h);
+					break;
+				case 'croc1':
+					this.w = 127;
+					this.sx = 127
+					setTimeout(()=>{this.sx = 254},500);
+					
+					ctx.drawImage(sprites2, this.sx, 176, 127, 48, this.x, this.y, this.w, this.h);
+					
+					break;
+				case 'croc2':
+					this.w = 127;
+					this.sx = 127;
+					ctx.drawImage(sprites2, this.sx, 104, 127, 48, this.x, this.y, this.w, this.h);
+					break;			
+
+				// case 'log2':
+				// 	this.w = 392;
+				// 	ctx.drawImage(sprites, 248, 160, 392, 80, this.x, this.y, this.w, this.h);
+				// 	break;
+				// case 'log3':
+				// 	this.w = 256;
+				// 	ctx.drawImage(sprites, 0, 240, 256, 80, this.x, this.y, this.w, this.h);
+				// 	break;									
+
+			}	
 
 
 		}
@@ -473,7 +539,7 @@ class Vehicle {
 			//If vehicle is moving in Reverse
 			else if(this.x < -150 && (this.row === 'row2' || this.row === 'row5' || this.row === 'row4Water' )){
 
-				this.x = canvas.width +150 ; 
+				this.x = canvas.width + 150 ; 
 				
 			}
 
@@ -503,8 +569,8 @@ class Vehicle {
 
 //Make A log Class
 class Log extends Vehicle{
-	constructor(x,y,w,h,color,speed,row){
-		super(x, y, w, h, color, speed, row);
+	constructor(x, y, h, speed, row, img){
+		super(x, y, h, speed, row, img);
 	}
 
 
@@ -513,8 +579,10 @@ class Log extends Vehicle{
 
 //Make A Crocodile Class 
 class Croc extends Vehicle{
-	constructor(x,y,w,h,color,speed,row){
-		super(x, y, w, h, color, speed, row);
+	constructor(x, y, h, speed, row, img){
+		super(x, y, h, speed, row, img);
+		this.sx = 127;
+	
 	}
 }
 

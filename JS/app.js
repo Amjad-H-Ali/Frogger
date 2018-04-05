@@ -15,6 +15,8 @@ const sprites = new Image();
 sprites.src = 'images/spritemap.png';
 const sprites2 = new Image();
 sprites2.src = 'images/croc.png';
+const sprites3 = new Image();
+sprites3.src = 'images/bug.png';
 
 
 //General Game Object
@@ -50,7 +52,7 @@ const theFroggerGame = {
 	},
 	//Generate life bug
 	generateBug(){
-		const newBug = new Bug (this.randomPosition('x'), this.randomPosition('y'), 25, 25, 'rgb(255, 0, 0)', 0, undefined );
+		const newBug = new Bug (this.randomPosition('x'), this.randomPosition('y'), 25, 0, undefined, 'bug');
 		this.bugArray.push(newBug);
 	},
 	//Remove Bug
@@ -90,7 +92,6 @@ document.addEventListener('keydown',(e)=>{
 		
 		case 'ArrowRight':
 			frogger.sx = 240;
-			// frogger.direction = 'E';
 			frogger.x +=  frogger.speed;
 			setTimeout(()=>{
 				frogger.sx = 160;
@@ -99,7 +100,6 @@ document.addEventListener('keydown',(e)=>{
 
 		case 'ArrowLeft':
 			frogger.sx = 560;
-			frogger.direction = 'W';
 			frogger.x -= frogger.speed;
 			setTimeout(()=>{
 				frogger.sx = 480;
@@ -107,8 +107,7 @@ document.addEventListener('keydown',(e)=>{
 			break;
 		
 		case 'ArrowUp':
-			frogger.sx = 80;
-			frogger.direction = 'N';	
+			frogger.sx = 80;	
 			frogger.y -= frogger.speed;
 			if(frogger.y < 100){
 				frogger.increaseScore();
@@ -119,8 +118,7 @@ document.addEventListener('keydown',(e)=>{
 			break;
 		
 		case 'ArrowDown':
-			frogger.sx = 400;
-			frogger.direction = 'S';	
+			frogger.sx = 400;	
 			frogger.y += frogger.speed;
 			setTimeout(()=>{
 				frogger.sx = 320;
@@ -500,22 +498,19 @@ class Vehicle {
 					ctx.drawImage(sprites, 320, 80, 130, 80, this.x, this.y, this.w, this.h);
 					break;
 				case 'log1':
-					this.w = 180;
-					ctx.drawImage(sprites, 8, 160, 180, 80, this.x, this.y, this.w, this.h);
+					ctx.drawImage(sprites, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
 					break;
 				case 'croc1':
-					this.w = 127;
-					this.sx = 127
-					setTimeout(()=>{this.sx = 254},500);
-					
 					ctx.drawImage(sprites2, this.sx, 176, 127, 48, this.x, this.y, this.w, this.h);
-					
 					break;
 				case 'croc2':
-					this.w = 127;
-					this.sx = 127;
 					ctx.drawImage(sprites2, this.sx, 104, 127, 48, this.x, this.y, this.w, this.h);
-					break;			
+					break;
+				case 'bug':
+					ctx.drawImage(sprites3, this.sx, this.sy, this.sw, this.sh, this.x, this.y, this.w, this.h);
+					break;
+								
+
 
 				// case 'log2':
 				// 	this.w = 392;
@@ -542,9 +537,8 @@ class Vehicle {
 				this.x = canvas.width + 150 ; 
 				
 			}
-
-			this.x += this.speed;
 			
+			this.x += this.speed;
 			
 			this.drawVehicle();
 
@@ -571,6 +565,11 @@ class Vehicle {
 class Log extends Vehicle{
 	constructor(x, y, h, speed, row, img){
 		super(x, y, h, speed, row, img);
+		this.w = 180;
+		this.sx = 8;
+		this.sy = 160;
+		this.sw = 180;
+		this.sh = 80;
 	}
 
 
@@ -582,14 +581,22 @@ class Croc extends Vehicle{
 	constructor(x, y, h, speed, row, img){
 		super(x, y, h, speed, row, img);
 		this.sx = 127;
+		this.w = 127;
 	
 	}
+
 }
 
 //Make Life bug Class
 class Bug extends Vehicle{
-	constructor(x,y,w,h,color,speed,row){
-		super(x, y, w, h, color, speed, row);
+	constructor(x, y, h, speed, row, img){
+		super(x, y, h, speed, row, img);
+
+		this.w = 45;
+		this.sx = 0;
+		this.sy = 0;
+		this.sw = 600;
+		this.sh = 400;
 	}
 }
 
@@ -606,21 +613,10 @@ const animate = ()=>{
 	scene.drawScene();
 
 
-
-
-
-	// Draw Each Croc
-	for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
-		for(let j = 0, v = scene.dangerZone.water.rows[i].crocs.length ; j < v ; j ++){
-			//Move each croc
-			scene.dangerZone.water.rows[i].crocs[j].move();
-	
-		};
-	};
-	
-
 	//Let's assume frog is not on log
 	let frogOnLog = false;
+
+
 
 	// Draw Each Log 
 	for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
@@ -637,6 +633,11 @@ const animate = ()=>{
 				theFroggerGame.attachLog(scene.dangerZone.water.rows[i].vehicles[j].speed);
 			};
 		};
+
+		for(let j = 0, v = scene.dangerZone.water.rows[i].crocs.length ; j < v ; j ++){
+			//Move each croc
+			scene.dangerZone.water.rows[i].crocs[j].move();
+		};	
 
 	};
 

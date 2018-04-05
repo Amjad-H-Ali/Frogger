@@ -1,5 +1,9 @@
 # Frogger
 
+
+THIS IS NOT THE ORIGINAL FROGGER GAME
+
+
 All Credit for the Frogger Sprite Images Goes To The original Frogger Arcade Game Developed By Konami, Gremlin Industries, Parker Brothers, Hasbro Interactive, and Handheld Games
 
 

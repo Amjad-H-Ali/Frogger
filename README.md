@@ -1,10 +1,13 @@
 # Frogger
 
-##### Courtesy for the Frogger Sprite Images Goes To The original Frogger Arcade Game Developed By Konami, Gremlin Industries, Parker Brothers, Hasbro Interactive, and Handheld Games
+##### Courtesy for the Frogger Sprite Images Goes To The original Frogger Arcade Game Developed By Konami, Gremlin Industries, Parker Brothers, Hasbro Interactive, and Handheld Games.
 
 ##### Courtesy for the Crocodile Sprite Images Goes to https://dushaunwilliams.com/projects/project-miner/
 
 ##### Courtesy for the Lady Bug Sprite Images goes to https://gameartpartners.com/downloads/page/27/
+
+
+###### Please head to Frogger/Frogger_wire_frame_User_story.docx for the user stories and wireframe.
 
 
 

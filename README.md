@@ -7,7 +7,7 @@
 ##### Courtesy for the Lady Bug Sprite Images goes to https://gameartpartners.com/downloads/page/27/
 
 ### User Stories and WireFrames
-##### Please refer to the Frogger_wire_frame_User_story.docx for the user stories and wireframe.
+##### Please refer to the [Frogger User Stories](Frogger_wire_frame_User_story.docx) link for the user stories and wireframe.
 
 ### Tech
 ##### This Game Was Developed With Javascript, Canvas, HTML, CSS, and Sprite Images.

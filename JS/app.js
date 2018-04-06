@@ -3,6 +3,7 @@
 //H3 Tag to input score and Lives
 let lives = document.getElementById('lives');
 let score = document.getElementById('score');
+let round = document.getElementById('round');
 
 //Controls Animation function
 let control = true;
@@ -51,7 +52,15 @@ const theFroggerGame = {
 		
 	},
 	gameOver(){
-		this.initialize();
+		control = false;
+		ctx.font = '100px Arial';
+		ctx.fillStyle = 'rgb(255,0,0)'
+		ctx.fillText('Game Over',(canvas.width/2)-250, canvas.height/2)
+
+		setTimeout(()=>{
+			this.initialize();
+			control = true;
+		},2500)
 
 	},
 	initialize() {
@@ -79,10 +88,16 @@ const theFroggerGame = {
 		scene.dangerZone.water.logFactory()
 		scene.dangerZone.water.crocFactory()
 		this.generateBug()
-		console.log('initialize');
+
+		lives.innerText = 'Lives: ' + frogger.life ;
+		score.innerText = 'Score: ' + frogger.score;
+		round.innerText = 'Round: ' + theFroggerGame.round;
+		
 	},
 	changeRound(){
 		this.round += 1;
+
+
 
 		for(let i = 0, r = scene.dangerZone.street.rows.length; i < r ; i ++){
 			for(let j = 0, v = scene.dangerZone.street.rows[i].vehicles.length ; j < v ; j ++){
@@ -258,6 +273,8 @@ const frogger = {
 		this.score += 100;
 		control = false;
 		theFroggerGame.changeRound();
+
+
 		setTimeout(()=>{
 			this.x = canvas.width/2;
 			this.y = canvas.height - 75;
@@ -771,6 +788,7 @@ const animate = ()=>{
 	
 	lives.innerText = 'Lives: ' + frogger.life ;
 	score.innerText = 'Score: ' + frogger.score;
+	round.innerText = 'Round: ' + theFroggerGame.round;
 
 
 
@@ -784,14 +802,10 @@ const animate = ()=>{
 };
 
 
-//Add Objects into their Associated Arrays
-lives.innerText = 'Lives: ' + frogger.life ;
-score.innerText = 'Score: ' + frogger.score;
-
 
 theFroggerGame.initialize()
 
-// animate();
+
 
 
 

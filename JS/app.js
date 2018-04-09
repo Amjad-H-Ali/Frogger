@@ -68,14 +68,14 @@ const theFroggerGame = {
 		// loop set street vehicles length to 0
 		// loop set water vehicles (logs) lenght to 0
 		// loop set crocs length to 0
-		for(let i = 0, r = scene.dangerZone.street.rows.length; i < r ; i ++){
-			scene.dangerZone.street.rows[i].vehicles.length = 0;
-		}
+		for(let i = 0, r = scene.street.rows.length; i < r ; i ++){
+			scene.street.rows[i].vehicles.length = 0;
+		};
 
-		for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
-			scene.dangerZone.water.rows[i].vehicles.length = 0;
-			scene.dangerZone.water.rows[i].crocs.length = 0;
-		}	
+		for(let i = 0, r = scene.water.rows.length; i < r ; i ++){
+			scene.water.rows[i].vehicles.length = 0;
+			scene.water.rows[i].crocs.length = 0;
+		};	
 
 		// set everything back to the way it is at the beginning
 		// set round number back to zero, 
@@ -84,9 +84,9 @@ const theFroggerGame = {
 		this.round = 1;
 		scene.drawScene();
 		frogger.drawFrog();
-		scene.dangerZone.street.vehicleFactory()
-		scene.dangerZone.water.logFactory()
-		scene.dangerZone.water.crocFactory()
+		scene.street.vehicleFactory()
+		scene.water.logFactory()
+		scene.water.crocFactory()
 		this.generateBug()
 
 		lives.innerText = 'Lives: ' + frogger.life ;
@@ -99,37 +99,33 @@ const theFroggerGame = {
 
 
 
-		for(let i = 0, r = scene.dangerZone.street.rows.length; i < r ; i ++){
-			for(let j = 0, v = scene.dangerZone.street.rows[i].vehicles.length ; j < v ; j ++){
-				if(scene.dangerZone.street.rows[i].name !== 'row2' && scene.dangerZone.street.rows[i].name !== 'row5'){ 
-					scene.dangerZone.street.rows[i].vehicles[j].speed += .5;
+		for(let i = 0, r = scene.street.rows.length; i < r ; i ++){
+			for(let j = 0, v = scene.street.rows[i].vehicles.length ; j < v ; j ++){
+				if(scene.street.rows[i].name !== 'row2' && scene.street.rows[i].name !== 'row5'){ 
+					scene.street.rows[i].vehicles[j].speed += .5;
 				}
-				else scene.dangerZone.street.rows[i].vehicles[j].speed -= .5;
-			}					
-		}
+				else scene.street.rows[i].vehicles[j].speed -= .5;
+			};					
+		};
 
 
-		for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
-			for(let j = 0, v = scene.dangerZone.water.rows[i].vehicles.length ; j < v ; j ++){
-				if(scene.dangerZone.water.rows[i].name !== 'row2' && scene.dangerZone.water.rows[i].name !== 'row4Water'){ 
-					scene.dangerZone.water.rows[i].vehicles[j].speed += .5;
+		for(let i = 0, r = scene.water.rows.length; i < r ; i ++){
+			for(let j = 0, v = scene.water.rows[i].vehicles.length ; j < v ; j ++){
+				if(scene.water.rows[i].name !== 'row2' && scene.water.rows[i].name !== 'row4Water'){ 
+					scene.water.rows[i].vehicles[j].speed += .5;
 				}
-				else scene.dangerZone.water.rows[i].vehicles[j].speed -= .5;
-			}
+				else scene.water.rows[i].vehicles[j].speed -= .5;
+			};
 
-			for(let j = 0, v = scene.dangerZone.water.rows[i].crocs.length ; j < v ; j ++){
-				if(scene.dangerZone.water.rows[i].name !== 'row2' && scene.dangerZone.water.rows[i].name !== 'row4Water'){ 
-					scene.dangerZone.water.rows[i].crocs[j].speed += .5;
+			for(let j = 0, v = scene.water.rows[i].crocs.length ; j < v ; j ++){
+				if(scene.water.rows[i].name !== 'row2' && scene.water.rows[i].name !== 'row4Water'){ 
+					scene.water.rows[i].crocs[j].speed += .5;
 				}
-				else scene.dangerZone.water.rows[i].crocs[j].speed -= .5;
-			}					
-		}
-
-		console.log('round');
+				else scene.water.rows[i].crocs[j].speed -= .5;
+			};
+		};
 	}
-
-	
-}
+};
 
 
 
@@ -195,21 +191,31 @@ const frogger = {
 	//How Many Lives our Hero will Have
 	life: 5,
 	//The Value to increment/Decrement X,Y when Moving Frog
-	speed : 43,
+	speed: 43,
 	//The x position of the frogger sprite in the sheet
 	sx:0,
+	//The y position of the frogger sprite in the sheet 
+	sy:0,
+	//The width of the frogger sprite in the sheet
+	sw:80,
+	//The height of the frogger sprite in the sheet
+	sh:80,
 	//Dead or alive
 	alive: true,
 	//Position hero in center of width of canvas
-	x: canvas.width/2,
-	y: canvas.height - 75,
+	x: (canvas.width/2),
+	// x: ((canvas.width/2) -20),
+	// y: ((canvas.height - 95)),
+	y: (canvas.height - 75),
+	w: 45,
+	h: 45,
 	r: 10,
 	//Color of Body
-	color: 'rgb(102,153,0)',
+	// color: 'rgb(102,153,0)',
 	//Function to draw body
 	drawFrog(){ 	
 		
-		//Arms & Legs Width
+		// // Arms & Legs Width
 		// ctx.lineWidth = 3;
 		// //Draw Left Arm and Right Leg
 		// ctx.beginPath();
@@ -226,7 +232,7 @@ const frogger = {
 		// ctx.stroke();
 		// // Draw Body Part
 		// ctx.beginPath();
- 	// 	console.log(this);
+ 		
 		// ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
 		// ctx.fillStyle = this.color;
 		// ctx.fill();
@@ -235,7 +241,7 @@ const frogger = {
 
 		// Added Sprite Image of Frog
 		
-		ctx.drawImage(sprites, this.sx, 0, 80, 80, this.x - 20, this.y - 20, 45, 45);
+		ctx.drawImage(sprites, this.sx, this.sy, this.sw, this.sh, this.x - 20 /*this.x*/, this.y - 20/* this.y*/, this.w, this.h);
 		
 		// setTimeout( () => { 
 
@@ -267,7 +273,7 @@ const frogger = {
 		this.life -= 1;
 		if(this.life === 0){
 			theFroggerGame.gameOver();
-		}
+		};
 	},
 	increaseScore(){
 		this.score += 100;
@@ -287,7 +293,7 @@ const frogger = {
 	decrementScore(){
 		if(this.score > 0){
 			this.score -= 100;
-		}
+		};
 
 	},
 	die(){
@@ -322,237 +328,226 @@ const frogger = {
 
 
 	
-}
+};
 
 
 
 //Make Scene Object
 const scene = {
+	x: 0,
+	y: [canvas.height/7, 400],//Where to draw from
+	w: canvas.width,
+	h: [canvas.height/7, canvas.height/3.5], //Two Times bigger than land
+	color: ['#3498DB','#566573','#A569BD'],
+
+
 	//Draw Everything in Scene
 	drawScene(){
 		this.land.drawLand();
-		this.dangerZone.water.drawWater();
-		this.dangerZone.street.drawStreet();
+		this.water.drawWater();
+		this.street.drawStreet();
 	},
-	//The Safe Zone
+	
 	land:{
-		x: 0,//Draw From
-		y: 0,//Draw From
-		w: canvas.width,//Size of land Horizontally
-		h: canvas.height/7,//Size of Land Vertically
-		color: '#A569BD',//Color Of Land
+		
 		drawLand(){ //Draw 3 Peices of land
 			for(let i = 0; i < 3; i ++){
 				ctx.beginPath();
-				ctx.rect(this.x , i * 300, this.w, this.h)
-				ctx.fillStyle = this.color;
+				ctx.rect(scene.x, i * 300, scene.w, scene.h[0]);
+				ctx.fillStyle = scene.color[2];
 				ctx.fill();
 				ctx.closePath();
 						
-			}
+			};
 
-		},
+		}
 
 	},
-	//Danger zone is the water and Street
-	dangerZone:{
-			x: 0,
-			y: canvas.height/7,//Where to draw from
-			w: canvas.width,
-			h: canvas.height/3.5, //Two Times bigger than land
-			color: ['#3498DB','#566573','#C28F2E'],
-			//Water Object
-			water:{
-				//Rows In The Water
-				rows: 
-				[ 
-					{
-						name:'row1',
-						x:0,
-						y:260,
-						speed:2.5,
-						'log count': 3,
-						'croc count': 2,
-						space: 300,
-						vehicles:[],
-						logImg:'log1',
-						crocImg: 'croc1',
-						crocs:[]
-					},
-					{	
-						name:'row2',
-						x:0,
-						y:220,
-						speed:-3,
-						'log count': 2,
-						'croc count': 3,
-						space:275,
-						vehicles:[],
-						logImg:'log1',
-						crocImg:'croc2',
-						crocs:[]
-
-					},
-					{
-					 	name:'row3',
-						x:0,
-						y:180,
-						speed:3,
-						'log count': 2,
-						'croc count': 1,
-						space:375, 
-						vehicles:[],
-						logImg:'log1',
-						crocImg:'croc1',
-						crocs:[]
-					},
-					{
-					 	name:'row4Water',
-						x:0,
-						y:140,
-						speed:-2,
-						'log count': 1,
-						'croc count': 2,
-						space:250, 
-						vehicles:[],
-						logImg:'log1',
-						crocImg:'croc2',
-						crocs:[]
-					},
-					{
-					 	name:'row5',
-						x:0,
-						y:100,
-						speed:3,
-						'log count': 2,
-						'croc count': 2,
-						space:270, 
-						vehicles:[],
-						logImg:'log1',
-						crocImg:'croc1',
-						crocs:[]
-					}
-				],
-				//Draw Water
-				drawWater(){ 
-					
-					ctx.beginPath();
-					ctx.rect(scene.dangerZone.x , scene.dangerZone.y , scene.dangerZone.w, scene.dangerZone.h)
-					ctx.fillStyle = scene.dangerZone.color[0];
-					ctx.fill();
-					ctx.closePath();
-					// Reset the value of y for next time
-					scene.dangerZone.y = canvas.height/7;
-				},
-				//Generate Logs And Push To Each Row
-				logFactory(){	
-					for(let i = 0, len = this.rows.length; i < len; i ++){
-						for(let j = 0, lc = this.rows[i]['log count'] ; j < lc; j ++){
-							const newLog = new Log(this.rows[i].x + (j * this.rows[i].space) , this.rows[i].y, 40, this.rows[i].speed, this.rows[i].name, this.rows[i].logImg);
-							this.rows[i].vehicles.push(newLog);
-							this.rows[i].vehicles[j].drawVehicle();
-							
-
-						}
-					}	
-					
-				},
-				crocFactory(){
-					for(let i = 0, len = this.rows.length; i < len ; i ++){
-						for(let j = 0, cc = this.rows[i]['croc count']; j < cc; j ++){
-							const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * this.rows[i].space) + (j * 180), this.rows[i].y, 40, this.rows[i].speed, this.rows[i].name, this.rows[i].crocImg)
-							this.rows[i].crocs.push(newCroc);
-							this.rows[i].crocs[j].drawVehicle();
-						}
-					}
-				}
-			},	
-			//Street Object
-			street:{
-				//Rows In the Street
-				rows: 
-				[ 
-					{
-						name:'row1',
-						x:0,
-						y:560,
-						speed:3,
-						'vehicle count': 4,
-						space: 400,
-						vehicleImg:['car2', 'car3'],
-						vehicles:[]
-					},
-					{	
-						name:'row2',
-						x:0,
-						y:520,
-						speed:-4,
-						'vehicle count': 3,
-						space: 400,
-						vehicleImg:['car1', 'car4', 'car5'],
-						vehicles:[]
-
-					},
-					{
-					 	name:'row3',
-						x:0,
-						y:480,
-						speed:3,
-						'vehicle count': 3,
-						space: 350,
-						vehicleImg:['car2', 'car3'],
-						vehicles:[]
-					 },
-					{
-						name: 'row4',
-						x: 0,
-						y: 440,
-						speed: 2,
-						'vehicle count':5,
-						space:200,
-						vehicleImg:['car2', 'car3'],
-						vehicles:[]
-
-					},
-					{
-						name: 'row5',
-						x: 0,
-						y: 400,
-						speed: -2,
-						'vehicle count':3,
-						space: 300,
-						vehicleImg:['car1', 'car4', 'car5'],
-						vehicles:[]
-
-					}
-				],
-				//Draw Street
-				drawStreet(){
-					ctx.beginPath();
-					ctx.rect(scene.dangerZone.x , scene.dangerZone.y + 300 , scene.dangerZone.w, scene.dangerZone.h)
-					ctx.fillStyle = scene.dangerZone.color[1];
-					ctx.fill();
-					ctx.closePath();
-					// reset the value of y for next time
-					scene.dangerZone.y = canvas.height/7;
-				},
-				//Generate Vehicles And Push To Each Row
-				vehicleFactory(){
-					for(let i = 0, len = this.rows.length; i < len ; i ++){
-						for(let j = 0, vc = this.rows[i]['vehicle count']; j < vc; j++){
-							//(x,y,l,h,color,speed, row name)
-							const newVehicle = new Vehicle(this.rows[i].x + (this.rows[i].space * j), this.rows[i].y, 40, this.rows[i].speed, this.rows[i].name, this.rows[i].vehicleImg[Math.floor( Math.random() * this.rows[i].vehicleImg.length)]);
-							this.rows[i].vehicles.push(newVehicle);
-							this.rows[i].vehicles[j].drawVehicle();
-						};
-					};	
-						
-
-				}
-			}
+	
+	water:{
 			
-	}	
-}
+		//Water Object
+			
+		//Rows In The Water
+		rows: 
+		[ 
+			{
+				name:'row1',
+				x:0,
+				y:260,
+				speed:2.5,
+				'log count': 3,
+				'croc count': 2,
+				space: 300,
+				vehicles:[],
+				logImg:'log1',
+				crocImg: 'croc1',
+				crocs:[]
+			},
+			{	
+				name:'row2',
+				x:0,
+				y:220,
+				speed:-3,
+				'log count': 2,
+				'croc count': 3,
+				space:275,
+				vehicles:[],
+				logImg:'log1',
+				crocImg:'croc2',
+				crocs:[]
+
+			},
+			{
+				name:'row3',
+				x:0,
+				y:180,
+				speed:3,
+				'log count': 2,
+				'croc count': 1,
+				space:375, 
+				vehicles:[],
+				logImg:'log1',
+				crocImg:'croc1',
+				crocs:[]
+			},
+			{
+				name:'row4Water',
+				x:0,
+				y:140,
+				speed:-2,
+				'log count': 1,
+				'croc count': 2,
+				space:250, 
+				vehicles:[],
+				logImg:'log1',
+				crocImg:'croc2',
+				crocs:[]
+			},
+			{
+				name:'row5',
+				x:0,
+				y:100,
+				speed:3,
+				'log count': 2,
+				'croc count': 2,
+				space:270, 
+				vehicles:[],
+				logImg:'log1',
+				crocImg:'croc1',
+				crocs:[]
+			}
+		],
+		//Draw Water
+		drawWater(){ 
+			ctx.beginPath();
+			ctx.rect(scene.x , scene.y[0] , scene.w, scene.h[1])
+			ctx.fillStyle = scene.color[0];
+			ctx.fill();
+			ctx.closePath();
+			// Reset the value of y for next time
+			// scene.y[1] = canvas.height/7;
+		},
+		//Generate Logs And Push To Each Row
+		logFactory(){	
+			for(let i = 0, len = this.rows.length; i < len; i ++){
+				for(let j = 0, lc = this.rows[i]['log count'] ; j < lc; j ++){
+					const newLog = new Log(this.rows[i].x + (j * this.rows[i].space) , this.rows[i].y, 40, this.rows[i].speed, this.rows[i].name, this.rows[i].logImg);
+					this.rows[i].vehicles.push(newLog);
+					this.rows[i].vehicles[j].drawVehicle();
+				};
+			};
+		},
+		crocFactory(){
+			for(let i = 0, len = this.rows.length; i < len ; i ++){
+				for(let j = 0, cc = this.rows[i]['croc count']; j < cc; j ++){
+					const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * this.rows[i].space) + (j * 180), this.rows[i].y, 40, this.rows[i].speed, this.rows[i].name, this.rows[i].crocImg)
+					this.rows[i].crocs.push(newCroc);
+					this.rows[i].crocs[j].drawVehicle();
+				};
+			};
+		}
+	},	
+	//Street Object
+	street:{
+		//Rows In the Street
+		rows: 
+		[ 
+			{
+				name:'row1',
+				x:0,
+				y:560,
+				speed:3,
+				'vehicle count': 4,
+				space: 400,
+				vehicleImg:['car2', 'car3'],
+				vehicles:[]
+			},
+			{	
+				name:'row2',
+				x:0,
+				y:520,
+				speed:-4,
+				'vehicle count': 3,
+				space: 400,
+				vehicleImg:['car1', 'car4', 'car5'],
+				vehicles:[]
+			},
+			{
+				name:'row3',
+				x:0,
+				y:480,
+				speed:3,
+				'vehicle count': 3,
+				space: 350,
+				vehicleImg:['car2', 'car3'],
+				vehicles:[]
+			},
+			{
+				name: 'row4',
+				x: 0,
+				y: 440,
+				speed: 2,
+				'vehicle count':5,
+				space:200,
+				vehicleImg:['car2', 'car3'],
+				vehicles:[]
+			},
+			{
+				name: 'row5',
+				x: 0,
+				y: 400,
+				speed: -2,
+				'vehicle count':3,
+				space: 300,
+				vehicleImg:['car1', 'car4', 'car5'],
+				vehicles:[]
+			}
+		],
+		//Draw Street
+		drawStreet(){
+			ctx.beginPath();
+			ctx.rect(scene.x , scene.y[1], scene.w, scene.h[1]);
+			ctx.fillStyle = scene.color[1];
+			ctx.fill();
+			ctx.closePath();
+			// reset the value of y for next time
+			// scene.dangerZone.y = canvas.height/7;
+		},
+		//Generate Vehicles And Push To Each Row
+		vehicleFactory(){
+			for(let i = 0, len = this.rows.length; i < len ; i ++){
+				for(let j = 0, vc = this.rows[i]['vehicle count']; j < vc; j++){
+					//(x,y,l,h,color,speed, row name)
+					const newVehicle = new Vehicle(this.rows[i].x + (this.rows[i].space * j), this.rows[i].y, 40, this.rows[i].speed, this.rows[i].name, this.rows[i].vehicleImg[Math.floor( Math.random() * this.rows[i].vehicleImg.length)]);
+					this.rows[i].vehicles.push(newVehicle);
+					this.rows[i].vehicles[j].drawVehicle();
+				};
+			};
+		}
+	}				
+}	
+
 
 //Make A Vehicle Class
 class Vehicle {
@@ -649,15 +644,17 @@ class Vehicle {
 			let top = this.y;
 			let bottom = this.y + this.h;
 			let frogLeft = frogger.x;
-			let frogRight = frogger.x + frogger.r;
+			let frogRight = frogger.x + frogger.r; 
+			// frogger.r;
 			let frogTop = frogger.y;
-			let frogBottom = frogger.y + frogger.r;
-			//If any one of these are true , returns true, meaning not colliding.
+			let frogBottom = frogger.y + frogger.r; 
+			// frogger.r;
+			//If any one of these are true , returns true, meaning not colliding.!(True), meaning colliding.
 			return !(left >= frogRight || right <= frogLeft || top >= frogBottom || bottom <= frogTop)
 
 		}
 	
-}
+};
 
 //Make A log Class
 class Log extends Vehicle{
@@ -717,24 +714,24 @@ const animate = ()=>{
 
 
 	// Draw Each Log 
-	for(let i = 0, r = scene.dangerZone.water.rows.length; i < r ; i ++){
+	for(let i = 0, r = scene.water.rows.length; i < r ; i ++){
 	
-		for(let j = 0, v = scene.dangerZone.water.rows[i].vehicles.length ; j < v ; j ++){
+		for(let j = 0, v = scene.water.rows[i].vehicles.length ; j < v ; j ++){
 			//Move Each Log
-			scene.dangerZone.water.rows[i].vehicles[j].move();
+			scene.water.rows[i].vehicles[j].move();
 			
 			//Detect Collision For Each Log
-			if(scene.dangerZone.water.rows[i].vehicles[j].detectCollision() === true && frogger.alive === true){
+			if(scene.water.rows[i].vehicles[j].detectCollision() === true && frogger.alive === true){
 				//Frog is on log, set to true.
 				frogOnLog = true;
 				//Attach the frog to the log
-				theFroggerGame.attachLog(scene.dangerZone.water.rows[i].vehicles[j].speed);
+				theFroggerGame.attachLog(scene.water.rows[i].vehicles[j].speed);
 			};
 		};
 
-		for(let j = 0, v = scene.dangerZone.water.rows[i].crocs.length ; j < v ; j ++){
+		for(let j = 0, v = scene.water.rows[i].crocs.length ; j < v ; j ++){
 			//Move each croc
-			scene.dangerZone.water.rows[i].crocs[j].move();
+			scene.water.rows[i].crocs[j].move();
 		};	
 
 	};
@@ -761,12 +758,12 @@ const animate = ()=>{
 
 
 	//Draw Each Car
-	for(let i = 0, r = scene.dangerZone.street.rows.length; i < r ; i ++){
-		for(let j = 0, v = scene.dangerZone.street.rows[i].vehicles.length ; j < v ; j ++){
+	for(let i = 0, r = scene.street.rows.length; i < r ; i ++){
+		for(let j = 0, v = scene.street.rows[i].vehicles.length ; j < v ; j ++){
 			//Move Each Car
-			scene.dangerZone.street.rows[i].vehicles[j].move();
+			scene.street.rows[i].vehicles[j].move();
 			//Detect Collision For each Car
-			if(scene.dangerZone.street.rows[i].vehicles[j].detectCollision() === true && frogger.alive === true){
+			if(scene.street.rows[i].vehicles[j].detectCollision() === true && frogger.alive === true){
 				frogger.die();
 
 			};
@@ -803,7 +800,7 @@ const animate = ()=>{
 
 
 
-theFroggerGame.initialize()
+theFroggerGame.initialize();
 
 
 

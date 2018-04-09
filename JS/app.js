@@ -37,7 +37,7 @@ const theFroggerGame = {
 	},
 	//Generate life bug
 	generateBug(){
-		const newBug = new Bug (this.randomPosition('x'), this.randomPosition('y'), 25, 0, undefined, 'bug');
+		const newBug = new Bug (this.randomPosition('x'), this.randomPosition('y'), 0, undefined, 'bug');
 		this.bugArray.push(newBug);
 	},
 	//Remove Bug
@@ -73,7 +73,7 @@ const theFroggerGame = {
 		};
 
 		for(let i = 0, r = scene.water.rows.length; i < r ; i ++){
-			scene.water.rows[i].vehicles.length = 0;
+			scene.water.rows[i].logs.length = 0;
 			scene.water.rows[i].crocs.length = 0;
 		};	
 
@@ -99,31 +99,31 @@ const theFroggerGame = {
 
 
 
-		for(let i = 0, r = scene.street.rows.length; i < r ; i ++){
-			for(let j = 0, v = scene.street.rows[i].vehicles.length ; j < v ; j ++){
-				if(scene.street.rows[i].name !== 'row2' && scene.street.rows[i].name !== 'row5'){ 
-					scene.street.rows[i].vehicles[j].speed += .5;
-				}
-				else scene.street.rows[i].vehicles[j].speed -= .5;
-			};					
-		};
+		// for(let i = 0, r = scene.street.rows.length; i < r ; i ++){
+		// 	for(let j = 0, v = scene.street.rows[i].vehicles.length ; j < v ; j ++){
+		// 		if(scene.street.rows[i].name !== 'row2' && scene.street.rows[i].name !== 'row5'){ 
+		// 			scene.street.rows[i].vehicles[j].speed += .5;
+		// 		}
+		// 		else scene.street.rows[i].vehicles[j].speed -= .5;
+		// 	};					
+		// };
 
 
-		for(let i = 0, r = scene.water.rows.length; i < r ; i ++){
-			for(let j = 0, v = scene.water.rows[i].vehicles.length ; j < v ; j ++){
-				if(scene.water.rows[i].name !== 'row2' && scene.water.rows[i].name !== 'row4Water'){ 
-					scene.water.rows[i].vehicles[j].speed += .5;
-				}
-				else scene.water.rows[i].vehicles[j].speed -= .5;
-			};
+		// for(let i = 0, r = scene.water.rows.length; i < r ; i ++){
+		// 	for(let j = 0, v = scene.water.rows[i].logs.length ; j < v ; j ++){
+		// 		if(scene.water.rows[i].name !== 'row2' && scene.water.rows[i].name !== 'row4Water'){ 
+		// 			scene.water.rows[i].logs[j].speed += .5;
+		// 		}
+		// 		else scene.water.rows[i].logs[j].speed -= .5;
+		// 	};
 
-			for(let j = 0, v = scene.water.rows[i].crocs.length ; j < v ; j ++){
-				if(scene.water.rows[i].name !== 'row2' && scene.water.rows[i].name !== 'row4Water'){ 
-					scene.water.rows[i].crocs[j].speed += .5;
-				}
-				else scene.water.rows[i].crocs[j].speed -= .5;
-			};
-		};
+		// 	for(let j = 0, v = scene.water.rows[i].crocs.length ; j < v ; j ++){
+		// 		if(scene.water.rows[i].name !== 'row2' && scene.water.rows[i].name !== 'row4Water'){ 
+		// 			scene.water.rows[i].crocs[j].speed += .5;
+		// 		}
+		// 		else scene.water.rows[i].crocs[j].speed -= .5;
+		// 	};
+		// };
 	}
 };
 
@@ -376,10 +376,11 @@ const scene = {
 				x:0,
 				y:260,
 				speed:2.5,
+				speedFactor: 1.5,
 				'log count': 3,
 				'croc count': 2,
 				space: 300,
-				vehicles:[],
+				logs:[],
 				logImg:'log1',
 				crocImg: 'croc1',
 				crocs:[]
@@ -389,10 +390,11 @@ const scene = {
 				x:0,
 				y:220,
 				speed:-3,
+				speedFactor: -1.75,
 				'log count': 2,
 				'croc count': 3,
 				space:275,
-				vehicles:[],
+				logs:[],
 				logImg:'log1',
 				crocImg:'croc2',
 				crocs:[]
@@ -403,10 +405,11 @@ const scene = {
 				x:0,
 				y:180,
 				speed:3,
+				speedFactor: 1.75,
 				'log count': 2,
 				'croc count': 1,
 				space:375, 
-				vehicles:[],
+				logs:[],
 				logImg:'log1',
 				crocImg:'croc1',
 				crocs:[]
@@ -416,10 +419,11 @@ const scene = {
 				x:0,
 				y:140,
 				speed:-2,
+				speedFactor: -1.25,
 				'log count': 1,
 				'croc count': 2,
 				space:250, 
-				vehicles:[],
+				logs:[],
 				logImg:'log1',
 				crocImg:'croc2',
 				crocs:[]
@@ -429,10 +433,11 @@ const scene = {
 				x:0,
 				y:100,
 				speed:3,
+				speedFactor: 1.75,
 				'log count': 2,
 				'croc count': 2,
 				space:270, 
-				vehicles:[],
+				logs:[],
 				logImg:'log1',
 				crocImg:'croc1',
 				crocs:[]
@@ -452,16 +457,16 @@ const scene = {
 		logFactory(){	
 			for(let i = 0, len = this.rows.length; i < len; i ++){
 				for(let j = 0, lc = this.rows[i]['log count'] ; j < lc; j ++){
-					const newLog = new Log(this.rows[i].x + (j * this.rows[i].space) , this.rows[i].y, 40, this.rows[i].speed, this.rows[i].name, this.rows[i].logImg);
-					this.rows[i].vehicles.push(newLog);
-					this.rows[i].vehicles[j].drawVehicle();
+					const newLog = new Log(this.rows[i].x + (j * this.rows[i].space) , this.rows[i].y, this.rows[i].speed, this.rows[i].name, this.rows[i].logImg, this.rows[i].speedFactor);
+					this.rows[i].logs.push(newLog);
+					this.rows[i].logs[j].drawVehicle();
 				};
 			};
 		},
 		crocFactory(){
 			for(let i = 0, len = this.rows.length; i < len ; i ++){
 				for(let j = 0, cc = this.rows[i]['croc count']; j < cc; j ++){
-					const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * this.rows[i].space) + (j * 180), this.rows[i].y, 40, this.rows[i].speed, this.rows[i].name, this.rows[i].crocImg)
+					const newCroc = new Croc(this.rows[i].x + (this.rows[i]['log count'] * this.rows[i].space) + (j * 180), this.rows[i].y, this.rows[i].speed, this.rows[i].name, this.rows[i].crocImg, this.rows[i].speedFactor)
 					this.rows[i].crocs.push(newCroc);
 					this.rows[i].crocs[j].drawVehicle();
 				};
@@ -475,9 +480,10 @@ const scene = {
 		[ 
 			{
 				name:'row1',
-				x:0,
+				x:100,
 				y:560,
-				speed:3,
+				speed:1,
+				speedFactor: .75,
 				'vehicle count': 4,
 				space: 400,
 				vehicleImg:['car2', 'car3'],
@@ -485,9 +491,10 @@ const scene = {
 			},
 			{	
 				name:'row2',
-				x:0,
+				x:150,
 				y:520,
-				speed:-4,
+				speed:-2,
+				speedFactor: -1.25,
 				'vehicle count': 3,
 				space: 400,
 				vehicleImg:['car1', 'car4', 'car5'],
@@ -495,9 +502,10 @@ const scene = {
 			},
 			{
 				name:'row3',
-				x:0,
+				x:170,
 				y:480,
-				speed:3,
+				speed:2.5,
+				speedFactor: 1.5,
 				'vehicle count': 3,
 				space: 350,
 				vehicleImg:['car2', 'car3'],
@@ -505,9 +513,10 @@ const scene = {
 			},
 			{
 				name: 'row4',
-				x: 0,
+				x: 160,
 				y: 440,
-				speed: 2,
+				speed: 1.5,
+				speedFactor: 1,
 				'vehicle count':5,
 				space:200,
 				vehicleImg:['car2', 'car3'],
@@ -515,9 +524,10 @@ const scene = {
 			},
 			{
 				name: 'row5',
-				x: 0,
+				x: 130,
 				y: 400,
 				speed: -2,
+				speedFactor: -1.25,
 				'vehicle count':3,
 				space: 300,
 				vehicleImg:['car1', 'car4', 'car5'],
@@ -539,7 +549,7 @@ const scene = {
 			for(let i = 0, len = this.rows.length; i < len ; i ++){
 				for(let j = 0, vc = this.rows[i]['vehicle count']; j < vc; j++){
 					//(x,y,l,h,color,speed, row name)
-					const newVehicle = new Vehicle(this.rows[i].x + (this.rows[i].space * j), this.rows[i].y, 40, this.rows[i].speed, this.rows[i].name, this.rows[i].vehicleImg[Math.floor( Math.random() * this.rows[i].vehicleImg.length)]);
+					const newVehicle = new Vehicle(this.rows[i].x + (this.rows[i].space * j), this.rows[i].y,this.rows[i].speed, this.rows[i].name, this.rows[i].vehicleImg[Math.floor( Math.random() * this.rows[i].vehicleImg.length)], this.rows[i].speedFactor);
 					this.rows[i].vehicles.push(newVehicle);
 					this.rows[i].vehicles[j].drawVehicle();
 				};
@@ -551,14 +561,15 @@ const scene = {
 
 //Make A Vehicle Class
 class Vehicle {
-		constructor(x, y, h, speed, row, img){
+		constructor(x, y, speed, row, img, speedFactor){
 			this.x = x;
 			this.y = y;
 			this.w = 40;
-			this.h = h;
+			this.h = 40;
 			this.speed = speed;
 			this.row = row;
 			this.img = img;
+			this.speedFactor = speedFactor;
 
 		}
 		drawVehicle(){
@@ -621,7 +632,7 @@ class Vehicle {
 		move(){	
 			//Conditionals to bring back vehicles on canvas
 
-			if(this.x > (canvas.width + 150) && this.row !== 'row2'){
+			if(this.x > (canvas.width + 150)){
 				this.x = -150;
 			}
 			//If vehicle is moving in Reverse
@@ -631,6 +642,10 @@ class Vehicle {
 				
 			}
 			
+			if(theFroggerGame.round > 1){
+				this.speed = (theFroggerGame.round * this.speedFactor);
+			}
+
 			this.x += this.speed;
 			
 			this.drawVehicle();
@@ -658,8 +673,8 @@ class Vehicle {
 
 //Make A log Class
 class Log extends Vehicle{
-	constructor(x, y, h, speed, row, img){
-		super(x, y, h, speed, row, img);
+	constructor(x, y, speed, row, img,  speedFactor){
+		super(x, y, speed, row, img,  speedFactor);
 		this.w = 180;
 		this.sx = 8;
 		this.sy = 160;
@@ -673,8 +688,8 @@ class Log extends Vehicle{
 
 //Make A Crocodile Class 
 class Croc extends Vehicle{
-	constructor(x, y, h, speed, row, img){
-		super(x, y, h, speed, row, img);
+	constructor(x, y, speed, row, img,  speedFactor){
+		super(x, y, speed, row, img,  speedFactor);
 		this.sx = 127;
 		this.w = 127;
 	
@@ -684,10 +699,11 @@ class Croc extends Vehicle{
 
 //Make Life bug Class
 class Bug extends Vehicle{
-	constructor(x, y, h, speed, row, img){
-		super(x, y, h, speed, row, img);
+	constructor(x, y, speed, row, img){
+		super(x, y, speed, row, img);
 
 		this.w = 45;
+		this.h = 25;
 		this.sx = 0;
 		this.sy = 0;
 		this.sw = 600;
@@ -716,16 +732,16 @@ const animate = ()=>{
 	// Draw Each Log 
 	for(let i = 0, r = scene.water.rows.length; i < r ; i ++){
 	
-		for(let j = 0, v = scene.water.rows[i].vehicles.length ; j < v ; j ++){
+		for(let j = 0, v = scene.water.rows[i].logs.length ; j < v ; j ++){
 			//Move Each Log
-			scene.water.rows[i].vehicles[j].move();
+			scene.water.rows[i].logs[j].move();
 			
 			//Detect Collision For Each Log
-			if(scene.water.rows[i].vehicles[j].detectCollision() === true && frogger.alive === true){
+			if(scene.water.rows[i].logs[j].detectCollision() === true && frogger.alive === true){
 				//Frog is on log, set to true.
 				frogOnLog = true;
 				//Attach the frog to the log
-				theFroggerGame.attachLog(scene.water.rows[i].vehicles[j].speed);
+				theFroggerGame.attachLog(scene.water.rows[i].logs[j].speed);
 			};
 		};
 

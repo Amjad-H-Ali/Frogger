@@ -80,7 +80,8 @@ const theFroggerGame = {
 		// set everything back to the way it is at the beginning
 		// set round number back to zero, 
 		// set lives back to 5	
-		frogger.life  =  5;	
+		frogger.life  =  5;
+		frogger.score = 0;	
 		this.round = 1;
 		scene.drawScene();
 		frogger.drawFrog();

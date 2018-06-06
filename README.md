@@ -1,5 +1,9 @@
 # Frogger
 #### By Amjad Ali
+
+### Description
+##### This Game is Based on the Classic Frogger Game Developed In 1981. 
+
 ### Credits
 ##### Courtesy for the Frogger Sprite Images Goes To The original Frogger Arcade Game Developed By Konami, Gremlin Industries, Parker Brothers, Hasbro Interactive, and Handheld Games.
 
@@ -33,9 +37,6 @@
 
 ### Technology
 ##### This Game Was Developed With Javascript, Canvas, Classes, Factories, HTML, CSS, and Sprite Images.
-
-### Description
-##### This Game is Based on the Classic Frogger Game Developed In 1981.
 
 ### Game View
 ![alt text](images/FroggerGame.png)
